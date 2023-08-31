@@ -1,0 +1,35 @@
+module.exports = {
+    content: [
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+    ],
+    theme: {
+        colors: {
+            white: "#ffffff",
+            blue_custom: "#140C40",
+            gray_custom: "#C9C9C9",
+            gray_custom_2: "rgb(148, 152, 167)",
+            gray_custom_3: "rgb(69, 78, 109)",
+            gray_custom_4: "#f6f6f6",
+            red_custom: "#ff0000",
+            darkRed_custom: "#cf0f0f",
+            lightPink_custom: "#FEF4F4",
+            orange_custom: "#FF5700",
+            transparent: "rgba(0,0,0,0)",
+            light_yellow_custom: "#FABA00",
+            green_custom: "rgb(20, 164, 77)",
+            light_blue: "#DDEAF0",
+            light_yellow: "#E5FA9E",
+            light_purple: "#DBD0EE",
+            black: "rgb(0,0,0)",
+            modal_color: "rgba(1,1,1,0.5)",
+        },
+        fontFamily: {
+            playfair: ["Playfair Display", "sans-serif"],
+            roboto: ["Roboto", "sans-serif"],
+        },
+        extend: {},
+    },
+    plugins: [],
+};
