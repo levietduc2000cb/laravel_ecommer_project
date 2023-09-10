@@ -11,7 +11,7 @@ class Faqs extends Model
 
     protected $table = 'faqs';
 
-    protected $fillable = ['title','question','answer'];
-    protected $guarded = ['id','created_at','updated_at'];
-    protected $casts = ['title'=>'string','question'=>'string','answer'=>'string'];
+    protected $fillable = ['title','question','answer','customerId'];
+    protected $guarded = ['id','created_at','updated_at','customerId'];
+    protected $casts = ['title'=>'string','question'=>'string','answer'=>'string','customerId'=>'integer'];
 }

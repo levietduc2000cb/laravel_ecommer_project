@@ -18,13 +18,16 @@
             <i class="hidden text-3xl menu_navigation fa-solid fa-bars sm:block lg:hidden"></i>
         </div>
         <div class="items-center hidden gap-8 lg:flex">
+            @if(auth()->check())
             <a href="{{route('user_faqs')}}" class="text-base hover:text-red_custom">FAQ</a>
             <a href="{{route('track-order')}}" class="text-base hover:text-red_custom">Track Order</a>
             <a href="{{route('cart')}}"><i class="cursor-pointer fa-solid fa-cart-shopping" style="font-size: 1.6rem"></i></a>
-            {{-- <a href="{{route('login')}}" class="py-[0.65rem] text-base font-bold text-white px-7 bg-red_custom rounded-3xl">Sign in</a> --}}
-            <a href="{{route('profile')}}">
-                <img class="w-12 border border-solid rounded-full aspect-square border-red_custom" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwKdihKUJCSCzPjXHpu2s-grwe3IyNzsroLg&usqp=CAU" alt="avatar">
-            </a>
+                <a href="{{route('user_profile')}}">
+                    <img class="w-12 border border-solid rounded-full aspect-square border-red_custom" src="{{isset(auth()->user()->avatarUrl) ? asset('images/users/'.auth()->user()->avatarUrl) : asset('images/books/no-image.jpg')}}" alt="avatar">
+                </a>
+            @else
+                <a href="{{route('login')}}" class="py-[0.65rem] text-base font-bold text-white px-7 bg-red_custom rounded-3xl">Sign in</a>
+            @endif
         </div>
        </header>
        @include("user/layout/navigation")

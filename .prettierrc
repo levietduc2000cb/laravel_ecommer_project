@@ -1,0 +1,21 @@
+{
+    "printWidth": 80,
+    "tabWidth": 4,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "overrides": [
+      {
+        "files": "*.php",
+        "options": {
+          "parser": "php"
+        }
+      },
+      {
+        "files": "*.blade.php",
+        "options": {
+          "parser": "php",
+          "embeddedLanguageFormatting": "auto"
+        }
+      }
+    ]
+}

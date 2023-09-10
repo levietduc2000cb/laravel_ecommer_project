@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('question');
             $table->text('answer')->nullable();
+            $table->integer('customerId');
             $table->timestamps();
         });
     }

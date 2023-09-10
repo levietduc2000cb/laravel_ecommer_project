@@ -37,6 +37,7 @@
     if(!isset($search)){
         $search = null;
     }
+    echo var_dump($faqs[0]->fullName);
     @endphp
     <main>
         <x-admin-search-bar route-name="admin_faqs" search={{$search}} placeholder="Find question" route-search="/faqs/search-name"></x-admin-search-bar>
@@ -55,8 +56,8 @@
                 <tr class="cursor-pointer">
                 <td>
                     <div class="flex items-center gap-2 py-2 pl-3">
-                        <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="https://th.bing.com/th/id/OIP.OYGQMo9Rp4aMkzniqdnk3AHaHa?w=164&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar_customer">
-                        <span class="font-bold">Lê Việt Đức</span>
+                        <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="{{isset($faq->avatarUrl) ? asset('images/users/'.$faq->avatarUrl) : asset('images/books/no-image.jpg')}}" alt="avatar_customer">
+                        <span class="font-bold">{{$faq->fullName}}</span>
                     </div>
                 </td>
                 <td class="hidden sm:table-cell">

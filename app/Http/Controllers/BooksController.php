@@ -42,11 +42,6 @@ class BooksController extends Controller
         return view('admin/books', $res);
     }
 
-    public function create()
-    {
-
-    }
-
     public function store(Request $request)
     {
         //Get all data from form with method post
@@ -69,11 +64,6 @@ class BooksController extends Controller
         return back()->with("ms_error","Book created failed!");
     }
 
-    public function show($id)
-    {
-        // Logic for displaying a specific book
-    }
-
     public function edit($id)
     {
         $book = Books::where('id', $id)->get();
@@ -89,6 +79,9 @@ class BooksController extends Controller
         $res = Books::where('id', $id)->get('image');
 
         $image = $res[0]->image;
+        if(!isset($image)){
+            $image = [];
+        }
         for($i=0;$i<4;$i++){
             if($request->hasFile($this->image_edit[$i])){
                 //Delete old image for book
@@ -102,11 +95,15 @@ class BooksController extends Controller
                 $timestamp = round(microtime(true) * 1000);
                 $imageName = $timestamp.$request->file($this->image_edit[$i])->getClientOriginalName();
                 $request->file($this->image_edit[$i])->move(public_path('images/books'),$imageName);
-                array_splice($image,$i,1,$imageName);
+                if(isset($image[$i])){
+                    array_splice($image,$i,1,$imageName);
+                }
+                else{
+                    array_push($image,$imageName);
+                }
             }
             else{
-                if (in_array($i,$listImageEmpty)) {
-
+                if (isset($listImageEmpty) && in_array($i, $listImageEmpty)) {
                     //Delete old image for book
                 if(isset($image[$i])){
                     $path = public_path("images/books/".$image[$i]);
@@ -146,12 +143,25 @@ class BooksController extends Controller
         }
         return back()->with('ms_error','Book deleted failed!');
     }
-    function searchName(Request $request){
+    public function searchName(Request $request){
         if($request->has('search')){
             $books = Books::where('name','like','%'.$request->query('search').'%')->take(10)->get('name');
             return response()->json($books,200);
         }
         return response()->json(null,200);
 
+    }
+
+    public function userBooksHome(){
+        $res = [];
+        $bannerBooks = Books::orderBy('created_at', 'desc')->skip(3)->take(3)->join('types','books.type','=','types.id')->select('books.*', 'types.name as typeBook')->get();
+        $bestSellingBooks =  Books::take(12)->get();
+        $thisWeekBooks = Books::orderBy('created_at', 'desc')->take(3)->join('types','books.type','=','types.id')->select('books.*', 'types.name as typeBook')->get();
+        $latestPublishedBooks = Books::orderBy('created_at', 'desc')->take(30)->get();
+        $res['bannerBooks'] = $bannerBooks;
+        $res['bestSellingBooks'] = $bestSellingBooks;
+        $res['thisWeekBooks'] = $thisWeekBooks;
+        $res['latestPublishedBooks'] = $latestPublishedBooks;
+        return view('user/home',$res);
     }
 }

@@ -103,7 +103,7 @@
         border-color: transparent;
     }
     .dot_slide.active {
-        border-color: white;
+        border-color: #cf0f0f;
     }
     /* Animation */
     .animationSlideUp {
@@ -365,4 +365,8 @@ input[type="checkbox"]:checked + label > i {
 }
 .tr:nth-child(even) {
     background-color: #f6f6f6;
+}
+/* Hidden scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
 }

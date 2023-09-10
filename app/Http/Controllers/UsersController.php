@@ -45,51 +45,6 @@ class UsersController extends Controller
         return view('admin/edituser',['user'=> $user]);
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $data = $request->except('_method', '_token','book_img_edit','book_img_edit_1','book_img_edit_2','book_img_edit_3','book_img_edit_4','image_empty');
-    //     //Get image empty to handle delete
-    //     $listImageEmpty = json_decode($request->request->get('image_empty'));
-    //     $res = Users::where('id', $id)->get('image');
-
-    //     $image = $res[0]->image;
-    //     for($i=0;$i<4;$i++){
-    //         if($request->hasFile($this->image_edit[$i])){
-    //             //Delete old image for book
-    //             if(isset($image[$i])){
-    //                 $path = public_path("images/books/".$image[$i]);
-    //                 if(File::exists($path)){
-    //                     File::delete($path);
-    //                 };
-    //             }
-    //             //Create a new image for book
-    //             $timestamp = round(microtime(true) * 1000);
-    //             $imageName = $timestamp.$request->file($this->image_edit[$i])->getClientOriginalName();
-    //             $request->file($this->image_edit[$i])->move(public_path('images/books'),$imageName);
-    //             array_splice($image,$i,1,$imageName);
-    //         }
-    //         else{
-    //             if (in_array($i,$listImageEmpty)) {
-
-    //                 //Delete old image for book
-    //             if(isset($image[$i])){
-    //                 $path = public_path("images/books/".$image[$i]);
-    //                 if(File::exists($path)){
-    //                     File::delete($path);
-    //                 };
-    //                     array_splice($image,$i,1);
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     $data['image'] = json_encode($image);
-    //     $res = Books::where('id', $id)->update($data);
-    //     if($res){
-    //         return back()->with('msg','Book update successfully!');
-    //     }
-    //     return back()->with('ms_error','Book update failed!');
-    // }
-
     public function destroy($id)
     {
         //Select image from database has id
@@ -116,4 +71,5 @@ class UsersController extends Controller
         }
         return response()->json(null,200);
     }
+
 }

@@ -124,6 +124,16 @@
      {{-- Footer --}}
 @endsection
 
+{{-- Notification when has error --}}
+@if(session('ms_error'))
+    <x-toast type="error" msg="{{session('ms_error')}}"/>
+@endif
+
+{{-- Notification when success --}}
+@if(session('msg'))
+    <x-toast type="infor" msg="{{session('msg')}}"/>
+@endif
+
 @pushOnce('scripts_low')
     <script src="{{asset('/js/custom.js')}}"></script>
     <script>

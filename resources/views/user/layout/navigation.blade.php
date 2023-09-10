@@ -8,7 +8,7 @@
             <li class="w-full lg:w-auto"> <a href="{{route('about')}}" class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">About</a></li>
             <li class="w-full lg:w-auto"><a href="{{route('blog')}}" class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Blog</a></li>
             <li class="w-full lg:w-auto"><a href="{{route('contact')}}" class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Contact</a></li>
-            <li class="w-full lg:w-auto"><a href="{{route('profile')}}" class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Profile</a></li>
+            <li class="w-full lg:w-auto"><a href="{{route('user_profile')}}" class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Profile</a></li>
         </ul>
     </nav>
 </div>

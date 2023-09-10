@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Faqs;
 
@@ -40,7 +41,7 @@ class FAQController extends Controller
             $count =  ceil(Faqs::count() / $take);
         }
         //Get data from table faqs and skip 10 item
-        $faqs = $faqs->skip($skip)->take($take)->get();
+        $faqs = $faqs->skip($skip)->take($take)->join('users','faqs.customerId','=','users.id')->select('faqs.*', 'users.fullName', 'users.avatarUrl')->get();
 
         $res['faqs'] = $faqs;
         $res['count'] =(int)$count;
@@ -50,6 +51,7 @@ class FAQController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $data['customerId'] = Auth::user()->id;
         $data = Faqs::create($data);
         if($data){
             return back()->with('msg','Send a question for administrator');

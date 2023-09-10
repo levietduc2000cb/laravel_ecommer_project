@@ -43,8 +43,12 @@
                 </a>
             </div>
         </div>
-        <button class="px-4 py-3 text-left text-gray_custom_2 hover:text-white">
-            <i class="w-9 fa-solid fa-arrow-right-from-bracket"></i>Logout
-        </button>
+        <form action="{{route('handle-logout')}}" method="post">
+            @csrf
+            @method('delete')
+            <button type="submit" class="px-4 py-3 text-left text-gray_custom_2 hover:text-white">
+                <i class="w-9 fa-solid fa-arrow-right-from-bracket"></i>Logout
+            </button>
+        </form>
 </div>
 

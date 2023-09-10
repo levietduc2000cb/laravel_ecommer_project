@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\{Hash,Auth};
 
 use App\Models\Users;
 
@@ -32,19 +32,23 @@ class AuthenticationController extends Controller
     }
 
     public function handleLogin(Request $request){
-        $res = Users::where('phone',$request->request->get('phone'))->first();
-        if($res){
-            if (Hash::check($request->request->get('password'), $res->password)) {
-                return redirect(route('home'));
+        $credetials = [
+            'phone'=>$request->phone,
+            'password'=>$request->password
+        ];
+        if(Auth::attempt($credetials,$request->keep_login)){
+            $isAdmin = Auth::user()->isAdmin;
+            if($isAdmin==1){
+                return redirect(route('overview'));
             }
-            return back()->with('ms_error','Phone or Email is not valid');
+            return redirect(route('home'));
         }
-        return back()->with('ms_error','Phone or Email is not valid');
-
+        return back()->with('ms_error','Phone or Password is not valid');
     }
 
     public function handleLogout(){
-
+        Auth::logout();
+        return redirect(route('login'));
     }
 
 }

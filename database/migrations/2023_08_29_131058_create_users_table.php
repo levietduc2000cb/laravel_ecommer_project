@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password');
             $table->string('avatarUrl')->nullable();
-            $table->string('address')->default('No address');
+            $table->string('address')->nullable();
             $table->boolean('isAdmin')->default(false);
+            $table->rememberToken();
             $table->timestamps();
         });
     }

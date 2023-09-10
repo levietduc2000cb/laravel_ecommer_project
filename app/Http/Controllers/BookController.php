@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Books;
+
 class BookController extends Controller
 {
-    public function index()
+    public function index($id)
     {
-        return view('user/book');
+        $res = [];
+        $book = Books::where('id', $id)->get();
+        $relatedBooks = Books::inRandomOrder()->where('type', $book[0]->type)->take(6)->get();
+        $res["book"] = $book[0];
+        $res["relatedBooks"] = $relatedBooks;
+        return view('user/book',$res);
     }
 
     public function create()
