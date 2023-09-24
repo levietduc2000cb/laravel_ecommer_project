@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap");
-@import "@fortawesome/fontawesome-free/css/all.css";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import '@fortawesome/fontawesome-free/css/all.css';
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +7,7 @@
 
 @layer utilities {
     /* Custom checkbox */
-    input[type="checkbox"]:checked ~ div {
+    input[type='checkbox']:checked ~ div {
         background-color: red;
     }
     /* Effect when hover button */
@@ -18,7 +18,7 @@
         z-index: 0;
     }
     .btnBeforeEffect::before {
-        content: "";
+        content: '';
         position: absolute;
         width: 100%;
         height: 100%;
@@ -29,7 +29,7 @@
         z-index: -2;
     }
     .btnBeforeEffect::after {
-        content: "";
+        content: '';
         position: absolute;
         width: 0%;
         height: 100%;
@@ -51,7 +51,7 @@
         z-index: 0;
     }
     .btnBeforeEffectTopToDown::before {
-        content: "";
+        content: '';
         position: absolute;
         width: 100%;
         height: 100%;
@@ -62,7 +62,7 @@
         z-index: -2;
     }
     .btnBeforeEffectTopToDown::after {
-        content: "";
+        content: '';
         position: absolute;
         width: 100%;
         height: 0%;
@@ -205,7 +205,7 @@
         transform: translateY(0);
     }
     /* Rounded checkbox */
-    input[type="checkbox"].rounded-checkbox ~ span {
+    input[type='checkbox'].rounded-checkbox ~ span {
         width: 1.375rem;
         aspect-ratio: 1/1;
         border: 1px solid lightgray;
@@ -216,15 +216,15 @@
         align-items: center;
         color: white;
     }
-    input[type="checkbox"].rounded-checkbox ~ span:hover {
+    input[type='checkbox'].rounded-checkbox ~ span:hover {
         background-color: lightgray;
     }
-    input[type="checkbox"].rounded-checkbox:checked ~ span {
+    input[type='checkbox'].rounded-checkbox:checked ~ span {
         background-color: red;
         border: 1px solid red;
     }
     /* Option radio */
-    input[type="radio"].option:checked ~ label {
+    input[type='radio'].option:checked ~ label {
         font-weight: 700;
         background-color: #f6f6f6;
     }
@@ -249,26 +249,26 @@
     }
     .review_star_content::before {
         position: absolute;
-        content: "(Tệ)";
+        content: '(Tệ)';
         white-space: nowrap;
         color: #faba00;
         transform: translateY(-25%);
         left: 10px;
     }
     .review_star:nth-child(5):hover ~ .review_star_content::before {
-        content: "(Tệ)";
+        content: '(Tệ)';
     }
     .review_star:nth-child(4):hover ~ .review_star_content::before {
-        content: "(Trung Bình)";
+        content: '(Trung Bình)';
     }
     .review_star:nth-child(3):hover ~ .review_star_content::before {
-        content: "(Khá)";
+        content: '(Khá)';
     }
     .review_star:nth-child(2):hover ~ .review_star_content::before {
-        content: "(Tốt)";
+        content: '(Tốt)';
     }
     .review_star:nth-child(1):hover ~ .review_star_content::before {
-        content: "(Xuất Sắc)";
+        content: '(Xuất Sắc)';
     }
 }
 
@@ -296,17 +296,17 @@
     background-color: gray;
 }
 .track_order-bar:nth-child(1)::before {
-    content: "1";
+    content: '1';
     color: white;
     left: 0;
 }
 .track_order-bar:nth-child(1)::after {
-    content: "2";
+    content: '2';
     color: white;
     left: 100%;
 }
 .track_order-bar:nth-child(2)::after {
-    content: "3";
+    content: '3';
     color: white;
     left: 100%;
 }
@@ -334,29 +334,29 @@
     text-transform: uppercase;
 }
 .track_order_content:nth-child(1)::before {
-    content: "Placed";
+    content: 'Placed';
 }
 .track_order_content:nth-child(1)::after {
     left: 100%;
-    content: "Shipped";
+    content: 'Shipped';
 }
 .track_order_content:nth-child(2)::after {
     left: 100%;
-    content: "Delivered";
+    content: 'Delivered';
 }
 
 /* FAQ */
-input[type="checkbox"] ~ .faq {
+input[type='checkbox'] ~ .faq {
     display: none;
 }
-input[type="checkbox"]:checked ~ .faq {
+input[type='checkbox']:checked ~ .faq {
     display: block;
 }
-input[type="checkbox"] + label > i {
+input[type='checkbox'] + label > i {
     transform: rotate(0);
     transition: transform 0.5s ease-in-out;
 }
-input[type="checkbox"]:checked + label > i {
+input[type='checkbox']:checked + label > i {
     transform: rotate(223deg);
 }
 /* Change backgound color */
@@ -369,4 +369,15 @@ input[type="checkbox"]:checked + label > i {
 /* Hidden scrollbar */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
+}
+
+/* Order's status */
+.status_order.placed {
+    background-color: red;
+}
+.status_order.shipped {
+    background-color: green;
+}
+.status_order.delivered {
+    background-color: blue;
 }

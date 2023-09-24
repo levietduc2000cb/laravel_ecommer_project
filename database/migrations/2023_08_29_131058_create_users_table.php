@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password');
             $table->string('avatarUrl')->nullable();
-            $table->string('address')->nullable();
+            $table->string('address')->default('Empty,Empty,Empty,Empty');
             $table->boolean('isAdmin')->default(false);
             $table->rememberToken();
             $table->timestamps();

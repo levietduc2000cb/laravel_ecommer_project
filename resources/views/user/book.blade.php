@@ -52,10 +52,11 @@ Book
                     alt="img-main">
             </div>
             <div class="flex gap-2 mt-5">
-                <button
-                    class="flex items-center justify-center flex-1 gap-2 py-3 font-bold border-2 border-solid rounded-lg font-roboto border-red_custom text-red_custom"><i
-                        class="hidden fa-brands fa-opencart sm:inline"></i><span>Thêm vào giỏ hàng</span></button>
-                <button class="flex-1 py-3 font-bold text-white rounded-lg bg-red_custom font-roboto">Mua ngay</button>
+                <button id="btn_add_cart"
+                    class="flex items-center justify-center flex-1 gap-2 py-3 font-bold border-2 border-solid rounded-lg font-roboto border-red_custom text-red_custom">
+                    <i class="hidden fa-brands fa-opencart sm:inline"></i><span>Thêm vào giỏ hàng</span></button>
+                <button id="btn_buy_now"
+                    class="flex-1 py-3 font-bold text-white rounded-lg bg-red_custom font-roboto">Mua ngay</button>
             </div>
         </div>
         <div>
@@ -287,10 +288,7 @@ Book
                 Đánh giá</li>
         </ul>
         <ul class="text-base font-light leading-7 mt-11">
-            <li style="display: block" class="menu_sub_content">Đắc Nhân Tâm” đưa ra những lời khuyên về cách cư xử, ứng
-                xử và giao tiếp với mọi người để đạt được thành công trong cuộc sống. Đây được coi là một trong những
-                cuốn sách nổi tiếng nhất, bán chạy nhất và có tầm ảnh hưởng nhất mọi thời đại mà bạn không nên bỏ qua.”
-                – Cafef.vn, 20 câu nói vàng đáng nhớ từ tuyệt tác để đời “Đắc Nhân Tâm”
+            <li style="display: block" class="menu_sub_content">{{$book->des}}
             </li>
             <li style="display: none" class="menu_sub_content">
                 <div class="flex gap-8">
@@ -425,7 +423,11 @@ Book
             @endforeach
         </div>
     </div>
+    <div id="modal_noty_add_order">
+
+    </div>
 </div>
+<x-modal-noti-login />
 {{-- Footer --}}
 @endsection
 
@@ -434,6 +436,11 @@ Book
 <script>
     //Handle quantity of book
     let idBook = '<?php echo $book->id;?>';
+
+    function addCartSuccess(){
+        location.reload();
+    }
+
     function decreateQuantity(e){
         let quantityId = document.getElementById(`quantity_${idBook}`)
         if(quantityId.value - 1 < 1){
@@ -464,3 +471,74 @@ Book
 </script>
 @endpush
 @endonce
+
+{{-- checkUserLogin() in modalNotiLogin component --}}
+@pushOnce('scripts_footer')
+<script>
+    let btnAddCart = document.getElementById("btn_add_cart");
+    let btnBuyNow = document.getElementById("btn_buy_now");
+    const CART_NAME = @json(env('PRODUCTS_CART'));
+    let book = @json($book);
+    //Handle add product into cart
+    btnAddCart.addEventListener("click", ()=>{
+        //Check user login
+        if(checkUserLogin()){
+            return;
+        };
+        //Add product into cart
+        let cart = JSON.parse(localStorage.getItem(CART_NAME)) || [];
+        let quantity = document.getElementById(`quantity_${book.id}`).value;
+        let haveProductInCart = false;
+        cart.forEach(function(product) {
+            if(product.id === book.id){
+                product.quantity = Number(product.quantity) + Number(quantity);
+                localStorage.setItem(CART_NAME, JSON.stringify(cart));
+                haveProductInCart = true;
+            }
+        });
+        if(!haveProductInCart){
+            book.price = book.price - (book.price*(book.sale/100));
+            book = {id:book.id, name:book.name, author:book.author, price:book.price, sale:book.sale, image:book.image[0] || 'no-image.jpg', quantity: quantity};
+            cart.push(book);
+            localStorage.setItem(CART_NAME, JSON.stringify(cart));
+
+        }
+        let modalNotiAddInCart = document.getElementById('modal_noty_add_order');
+        let imageAddCart = @json(asset('assets/add-cart-success.gif'));
+        modalNotiAddInCart.innerHTML = `<div class="fixed inset-0 flex items-center justify-center bg-modal_color">
+            <div
+                class="flex flex-col items-center justify-center w-[90%] sm:w-[70%] lg:w-1/3 p-2 rounded-md md:w-1/2 bg-light_yellow_2">
+                <img src="${imageAddCart}" alt="add_cart">
+                <div class="text-2xl font-bold text-center -translate-y-10">Thêm đơn hàng thành công</div>
+                <button onclick="addCartSuccess()" class="px-6 py-2 -translate-y-8 bg-white rounded">Đã
+                    hiểu
+                </button>
+            </div>
+        </div>`;
+    })
+    //Handle add product into cart and redirect to cart page
+    btnBuyNow.addEventListener("click",()=>{
+        if(checkUserLogin()){
+            return;
+        };
+        let cart = JSON.parse(localStorage.getItem(CART_NAME)) || [];
+        let quantity = document.getElementById(`quantity_${book.id}`).value;
+        let haveProductInCart = false;
+        cart.forEach(function(product) {
+            if(product.id === book.id){
+                product.quantity = Number(product.quantity) + Number(quantity);
+                localStorage.setItem(CART_NAME, JSON.stringify(cart));
+                haveProductInCart = true;
+            }
+        });
+        if(!haveProductInCart){
+            book.price = book.price - (book.price*(book.sale/100));
+            book = {id:book.id, name:book.name, author:book.author, price:book.price, sale:book.sale, image:book.image[0] || 'no-image.jpg', quantity: quantity};
+            cart.push(book);
+            localStorage.setItem(CART_NAME, JSON.stringify(cart));
+        }
+        localStorage.setItem(CART_NAME, JSON.stringify(cart));
+        window.location.href = @json(route('user_cart'));
+    })
+</script>
+@endPushOnce

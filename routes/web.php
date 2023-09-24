@@ -11,9 +11,11 @@ use App\Http\Controllers\{
     ProfileController,
     BooksController,
     UsersController,
+    SettingController,
     OrdersController,
     SupportController,
     TypesController,
+    BlogsController
 };
 use App\Models\Users;
 
@@ -43,8 +45,6 @@ Route::prefix('/logout')->group(function () {
 
 //Handle search bar action
 Route::get('books/search-name',[BooksController::class, 'searchName'])->name('admin_books_search');
-Route::get('customers/search-name',[UsersController::class, 'searchName'])->name('admin_customers_search');
-Route::get('faqs/search-name',[FAQController::class, 'searchName'])->name('admin_faqs_search');
 
 Route::group([],function () {
     Route::prefix('/')->group(function () {
@@ -83,11 +83,12 @@ Route::group(['middleware'=>['auth','user-access:0']],function () {
     });
     //Cart
     Route::prefix('/cart')->group(function () {
-        Route::get('/',[CartController::class, 'index'])->name('cart');
+        Route::get('/',[CartController::class, 'index'])->name('user_cart');
     });
     //Track Order
     Route::prefix('/track-order')->group(function () {
-        Route::get('/',[TrackOrderController::class, 'index'])->name('track-order');
+        Route::get('/',[TrackOrderController::class, 'index'])->name('user_track-order');
+        Route::get('/{id}',[TrackOrderController::class, 'show'])->name('user_track-order_detail');
     });
     // Profile
     Route::prefix('/profile')->group(function () {
@@ -107,6 +108,7 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
     Route::prefix('/admin')->group(function () {
         Route::get('/',[AdminController::class, 'index'])->name('overview');
         Route::get('/analystics',function(){return view('admin/analystics');})->name('analystics');
+        Route::get('/setting',[SettingController::class, 'indexAdmin'])->name('admin_setting');
         //Type route
         Route::prefix('/type')->group(function () {
             Route::post('/',[TypesController::class, 'store'])->name('admin_types_store');
@@ -125,7 +127,6 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
             Route::get('/edit/{id}',[UsersController::class, 'edit'])->name('admin_customers_edit');
             Route::put('/edit/{id}',[UsersController::class, 'update'])->name('admin_customers_update');
             Route::delete('/{id}',[UsersController::class, 'destroy'])->name('admin_customers_destroy');
-            Route::get('/setting',[UsersController::class, 'indexAdmin'])->name('admin_setting');
         });
         //Faq route
         Route::prefix('/faqs')->group(function () {
@@ -134,8 +135,23 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
             Route::put('/edit/{id}',[FAQController::class, 'update'])->name('admin_faqs_update');
             Route::delete('/{id}',[FAQController::class, 'destroy'])->name('admin_faqs_destroy');
         });
+        //Orders
         Route::prefix('/orders')->group(function () {
             Route::get('/',[OrdersController::class, 'indexAdmin'])->name('admin_orders');
+            Route::put('/{id}',[OrdersController::class, 'update'])->name('admin_order_update_status');
+            Route::get('/show/{id}',[OrdersController::class, 'show'])->name('admin_order_show');
+            Route::delete('/{id}',[OrdersController::class, 'destroy'])->name('admin_orders_destroy');
         });
+        //Blog
+        Route::prefix('/blogs')->group(function(){
+            Route::get('/',[BlogsController::class,'indexAdmin'])->name('admin_blogs');
+            Route::post('/ckeditor-upload',[BlogsController::class,'ckeditorUploadImage'])->name('ckeditor_upload');
+            Route::get('/create',[BlogsController::class,'create'])->name('admin_blog_create_page');
+            Route::post('/create',[BlogsController::class,'store'])->name('admin_blog_store');
+        });
+        //Search
+        Route::get('customers/search-name',[UsersController::class, 'searchName'])->name('admin_customers_search');
+        Route::get('faqs/search-name',[FAQController::class, 'searchName'])->name('admin_faqs_search');
+        Route::get('orders/search-name',[FAQController::class, 'searchName'])->name('admin_faqs_search');
     });
 });

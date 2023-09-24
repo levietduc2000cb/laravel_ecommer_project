@@ -24,7 +24,6 @@ class ProfileController extends Controller
         $res = Users::where('id', $id)->get('avatarUrl');
         $avatar = $res[0]->avatarUrl;
         if($request->hasFile('avatar')){
-            error_log("Có avatar changed successfully");
             $path = public_path("images/users/".$avatar);
             if(File::exists($path)){
                 File::delete($path);

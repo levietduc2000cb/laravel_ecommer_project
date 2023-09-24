@@ -25,4 +25,17 @@ function convertToMoney($number){
     }
     return null;
 }
+//Handle state order
+function handleStatusOrder($status){
+    switch ($status) {
+        case 0:
+            # code...
+            return 'placed';
+        case 1:
+            return 'shipped';
+        default:
+            return 'delivered';
+    }
+}
+
 ?>

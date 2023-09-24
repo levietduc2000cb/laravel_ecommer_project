@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\MailController;
+use App\Http\Controllers\{MailController, TrackOrderController};
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,3 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/send-email',[MailController::class,'index'])->name('send-email');
+Route::post('/send-email-join-us',[MailController::class,'sendEmailJoinUs'])->name('send-email-join-us');
+
+Route::prefix('/track-order')->group(function () {
+    Route::post('/',[TrackOrderController::class, 'store'])->name('user_track-order_store');
+});

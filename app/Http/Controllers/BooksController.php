@@ -30,6 +30,7 @@ class BooksController extends Controller
             $res['search'] = $request->query('search');
         }
         else{
+            //Get count in total
             $count =  ceil(Books::count() / $take);
         }
         //Get data from table book and skip 10 item

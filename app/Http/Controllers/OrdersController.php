@@ -4,15 +4,53 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+
+use App\Models\Orders;
+
 class OrdersController extends Controller
 {
     public function index()
     {
         return view('user/track_order');
     }
-    public function indexAdmin()
+    public function indexAdmin(Request $request)
     {
-        return view('admin/orders');
+        $orders = new Orders;
+        $res = [];
+        $skip = 0;
+        $take = 10;
+        $count = 0;
+        //$request->search_classification == 1: is Order's id
+        //$request->search_classification == 2: is user's name
+        //$request->search_classification == 0: is all
+
+        $count =  ceil(Orders::count() / $take);
+        $orders= $orders->join('users', 'orders.customerId', '=', 'users.id');
+
+        if($request->search_classification == 1){
+            if(isset($request->search)){
+                $orders = $orders->where('orders.id',(int)$request->search);
+                $count =  ceil($orders->count()/ $take);
+                $res['search'] = $request->search;
+            }
+        }
+        elseif ($request->search_classification == 2){
+            if(isset($request->search)){
+                $orders= $orders->where('users.fullName','like','%'.$request->search.'%');
+                $count =  ceil( $orders->count()/ $take);
+                $res['search'] = $request->search;
+            }
+        }
+
+        if($request->has('pagination')){
+            $skip = (int)($request->query('pagination')-1) * $take;
+            $res['pagination'] = (int)($request->query('pagination'));
+        }
+
+        $res['orders'] = $orders->orderBy('created_at', 'desc')->take($take)->skip($skip)->select('orders.*','users.avatarUrl as avatarUrl' ,'users.fullName as fullName', 'users.address as address')->get();
+        $res['count'] = $count;
+        $res['search_classification'] = $request->search_classification;
+        return view('admin/orders',$res);
     }
 
     public function create()
@@ -28,6 +66,9 @@ class OrdersController extends Controller
     public function show($id)
     {
         // Logic for displaying a specific book
+        $order = Orders::where('orders.id', $id)->join('users', 'orders.customerId', '=', 'users.id')->select('orders.*','users.avatarUrl as avatarUrl' ,'users.fullName as fullName', 'users.address as address')->first();
+        // dd($res);
+        return view('admin/orders_detail',['order'=>$order]);
     }
 
     public function edit($id)
@@ -38,10 +79,22 @@ class OrdersController extends Controller
     public function update(Request $request, $id)
     {
         // Logic for updating a book in the database
+        $order = Orders::where('id', $id)->select('status')->first();
+        (int)$status = $order->status;
+        if($status < 2){
+            $status+=1;
+        }
+        Orders::where('id', $id)->update(['status' => $status]);
+        return back();
     }
 
     public function destroy($id)
     {
-        // Logic for deleting a book
+         //Handle delete orders
+         $res = Orders::where('id', $id)->delete();
+         if($res){
+            return redirect(route('admin_orders'))->with('msg','Order '.$id.' deleted successfully!');
+        }
+        return redirect(route('admin_orders'))->with('ms_error','Order '.$id.' deleted failed!');
     }
 }

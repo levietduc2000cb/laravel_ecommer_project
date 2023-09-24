@@ -19,14 +19,26 @@
 @endsection
 
 @section('content')
-    @php
-    @endphp
+@php
+    if (isset($pagination) && (int)$pagination>1){
+        $pagination = $pagination;
+    }else{
+        $pagination = null;
+    }
+    if(!isset($search)){
+        $search = null;
+    }
+@endphp
     {{-- Title --}}
     {{-- Content --}}
     <main>
-        <form class="flex border border-solid rounded border-gray_custom_2">
-            <input type="text" class="flex-1 px-4 border-none outline-none" placeholder="Order's ID/Customer's Name">
-            <button class="h-9 aspect-[2/1] bg-gray_custom hover:bg-gray_custom_3 hover:text-white" type="submit">
+        <form action="{{route('admin_orders')}}" class="flex border border-solid rounded border-gray_custom_2">
+            <input id="text_search_orders" type="text" class="flex-1 px-2 border-none outline-none sm:px-4" placeholder="All/Order's ID/Customer's Name" value="{{$search}}" name="search">
+            <select name="search_classification" title="search_classification" id="search_classification" class="text-center border border-solid outline-none w-11 sm:w-20 border-gray_custom_2">
+                <option value="1" class="text-center" @selected($search_classification==1)>Id</option>
+                <option value="2" class="text-center" @selected($search_classification==2)>User</option>
+              </select>
+            <button type="submit" title="search_for_order" class="w-11 sm:w-auto h-9 aspect-[2/1] bg-gray_custom hover:bg-gray_custom_3 hover:text-white" type="submit">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
         </form>
@@ -43,120 +55,67 @@
               </tr>
             </thead>
             <tbody>
+                @if(isset($orders) && count($orders)>0)
+                @foreach($orders as $key => $order)
                 <tr class="bg-white cursor-pointer">
                     <td class="hidden sm:table-cell">
                         <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="https://th.bing.com/th/id/OIP.OYGQMo9Rp4aMkzniqdnk3AHaHa?w=164&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar_customer">
-                            <span class="font-bold">Lê Việt Đức</span>
+                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="{{asset('images/users/'.$order->avatarUrl)}}" alt="avatar_customer">
+                            <span class="font-bold">{{$order->fullName}}</span>
                         </div>
                     </td>
-                    <td class="font-bold">#121212121</td>
+                    <td class="font-bold">#{{$order->id}}</td>
                     <td class="hidden sm:table-cell">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 rounded-full aspect-square bg-green_custom"></span>
-                            <span>Shipped</span>
+                            <span class="status_order w-2 rounded-full aspect-square {{handleStatusOrder((int)$order->status)}}"></span>
+                            <span class="capitalize">{{handleStatusOrder((int)$order->status)}}</span>
                         </div>
                     </td>
-                    <td class="hidden capitalize md:table-cell">Hà Nội</td>
-                    <td class="capitalize md:table-cell">20000</td>
-                    <td class="hidden md:table-cell">23/23/2023</td>
+                    <td class="hidden capitalize md:table-cell">{{explode(",", $order->address)[3]}}</td>
+                    <td class="capitalize md:table-cell">{{convertToMoney((int)$order->total)}}</td>
+                    <td class="hidden md:table-cell">{{convertDateTime($order->created_at)}}</td>
                     <td class="py-3 pr-4">
                         <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Watch</button>
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
+                            <form action="{{route('admin_order_update_status',['id'=>$order->id])}}" method="POST" class="{{$order->status==2 ? 'cursor-not-allowed' : ''}} sm:inline-block">
+                                @csrf
+                                @method('put')
+                                <button type="submit" class="w-auto text-white rounded sm:px-2 sm:py-1 bg-orange_custom {{$order->status==2?"opacity-50 pointer-events-none":'opacity-100'}}" @disabled((int)$order->status==2)>Change status</button>
+                            </form>
+                            <a href="{{route('admin_order_show',['id'=>$order->id])}}" class="inline-block w-20 text-center text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Watch</a>
+                            <button type="button" onclick="openModalDelete(`Order : {{$order->id}}`,'{{$order->id}}','{{route('admin_orders_destroy',$order->id)}}')" class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
                         </div>
                     </td>
                 </tr>
-                <tr class="cursor-pointer bg-gray_custom_4">
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="https://th.bing.com/th/id/OIP.OYGQMo9Rp4aMkzniqdnk3AHaHa?w=164&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar_customer">
-                            <span class="font-bold">Lê Việt Đức</span>
-                        </div>
-                    </td>
-                    <td class="font-bold">#121212121</td>
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 rounded-full aspect-square bg-green_custom"></span>
-                            <span>Shipped</span>
-                        </div>
-                    </td>
-                    <td class="hidden capitalize md:table-cell">Hà Nội</td>
-                    <td class="capitalize md:table-cell">20000</td>
-                    <td class="hidden md:table-cell">23/23/2023</td>
-                    <td class="py-3 pr-4">
-                        <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Watch</button>
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
-                        </div>
-                    </td>
+                @endforeach
+                @else
+                <tr class="bg-white border border-solid border-gray_custom">
+                    <td colspan="7" class="py-6 text-center">No orders available</td>
                 </tr>
-                <tr class="bg-white cursor-pointer">
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="https://th.bing.com/th/id/OIP.OYGQMo9Rp4aMkzniqdnk3AHaHa?w=164&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar_customer">
-                            <span class="font-bold">Lê Việt Đức</span>
-                        </div>
-                    </td>
-                    <td class="font-bold">#121212121</td>
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 rounded-full aspect-square bg-green_custom"></span>
-                            <span>Shipped</span>
-                        </div>
-                    </td>
-                    <td class="hidden capitalize md:table-cell">Hà Nội</td>
-                    <td class="capitalize md:table-cell">20000</td>
-                    <td class="hidden md:table-cell">23/23/2023</td>
-                    <td class="py-3 pr-4">
-                        <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Watch</button>
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="cursor-pointer bg-gray_custom_4">
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="https://th.bing.com/th/id/OIP.OYGQMo9Rp4aMkzniqdnk3AHaHa?w=164&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar_customer">
-                            <span class="font-bold">Lê Việt Đức</span>
-                        </div>
-                    </td>
-                    <td class="font-bold">#121212121</td>
-                    <td class="hidden sm:table-cell">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 rounded-full aspect-square bg-green_custom"></span>
-                            <span>Shipped</span>
-                        </div>
-                    </td>
-                    <td class="hidden capitalize md:table-cell">Hà Nội</td>
-                    <td class="capitalize md:table-cell">20000</td>
-                    <td class="hidden md:table-cell">23/23/2023</td>
-                    <td class="py-3 pr-4">
-                        <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Watch</button>
-                            <button class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
-                        </div>
-                    </td>
-                </tr>
+                @endif
+
             </tbody>
         </table>
-        <div class="flex justify-center mt-5">
-            <div class="flex items-center h-6">
-              <a href="/" class="flex items-center justify-center mt-1 w-7"><i class="fa-solid fa-angles-left"></i></a>
-              <a href="/" class="flex items-center justify-center font-semibold w-7">1</a>
-              <a href="/" class="flex items-center justify-center font-semibold w-7 hover:underline hover:text-black text-gray_custom_2">2</a>
-              <a href="/" class="flex items-center justify-center font-semibold w-7 hover:underline hover:text-black text-gray_custom_2">3</a>
-              <a href="/" class="flex items-center justify-center font-semibold w-7 hover:underline hover:text-black text-gray_custom_2">4</a>
-              <a href="/" class="flex items-center justify-center font-semibold w-7 hover:underline hover:text-black text-gray_custom_2">5</a>
-              <a href="/" class="flex items-center justify-center mt-1 w-7 "><i class="fa-solid fa-angles-right"></i></a>
+        @if(isset($orders) && count($orders)>0)
+            <div class="flex justify-center mt-5">
+                <x-pagination pagination={{$pagination}} name-route="admin_orders" count={{$count}} search={{$search}}/>
             </div>
-        </div>
+        @endif
+
     </main>
-     {{-- Footer --}}
+{{-- Footer --}}
+{{-- Modal Delete --}}
+{{-- In Modal Delete has openModalDelete function --}}
+<x-contain-modal-delete/>
+{{-- Notification when has error --}}
+@if(session('ms_error'))
+    <x-toast type="error" msg="{{session('ms_error')}}"/>
+@endif
+
+{{-- Notification when success --}}
+@if(session('msg'))
+    <x-toast type="infor" msg="{{session('msg')}}"/>
+@endif
 @endsection
-
-
 
 
 

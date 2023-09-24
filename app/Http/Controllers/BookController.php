@@ -12,7 +12,7 @@ class BookController extends Controller
     {
         $res = [];
         $book = Books::where('id', $id)->get();
-        $relatedBooks = Books::inRandomOrder()->where('type', $book[0]->type)->take(6)->get();
+        $relatedBooks = Books::inRandomOrder()->where('id', '!=', $id)->where('type', $book[0]->type)->take(6)->get();
         $res["book"] = $book[0];
         $res["relatedBooks"] = $relatedBooks;
         return view('user/book',$res);

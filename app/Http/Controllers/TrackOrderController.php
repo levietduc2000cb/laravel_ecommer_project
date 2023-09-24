@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Orders;
 
 class TrackOrderController extends Controller
 {
     public function index()
     {
-        return view('user/track_order');
+        $id = Auth::user()->id;
+        $orders = Orders::where('customerId', $id)->get();
+        return view('user/track_order', ["orders"=>$orders]);
     }
 
     public function create()
@@ -18,12 +23,29 @@ class TrackOrderController extends Controller
 
     public function store(Request $request)
     {
-        // Logic for storing a new book in the database
+        $data = [];
+        $data['customerId'] = $request->customerId;
+        $data['status'] = $request->status;
+        $data['total'] = $request->total;
+        $data['products'] = json_encode($request->products);
+        if(isset($request->tax)){
+            $data['tax'] = $request->tax;
+        }
+        if(isset($request->discount)){
+            $data['discount'] = $request->discount;
+        }
+        $res = Orders::create($data);
+        if($res){
+            return response()->json(['msg' => 'Tạo đơn hàng thành công'], 200);
+        }
+        return response()->json(['msg' => 'Tạo đơn hàng thất bại'], 400);
     }
 
     public function show($id)
     {
-        // Logic for displaying a specific book
+        $order = Orders::where('id', $id)->get();
+        // dd($data);
+        return view('user/track_order_detail',['order' => $order[0]]);
     }
 
     public function edit($id)

@@ -144,7 +144,7 @@ $address = explode(",", $user[0]->address);
                 </div>
             </form>
         </div>
-        <form action="{{route('handle-logout')}}" method="post">
+        <form onsubmit="handleLogOut(event)" action="{{route('handle-logout')}}" method="post">
             @csrf
             @method('delete')
             <button type="submit" class="w-full py-2 mt-3 text-center text-white rounded bg-blue_custom">Log
@@ -175,6 +175,12 @@ $address = explode(",", $user[0]->address);
         let imgElement = document.querySelector(".avatar_img");
 
         imgElement.src = urlAvatar;
+    }
+
+    function handleLogOut(e){
+        e.preventDefault();
+        localStorage.clear();
+        e.target.submit()
     }
 </script>
 @endpush

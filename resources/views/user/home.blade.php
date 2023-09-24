@@ -32,7 +32,8 @@ Home
                         class="py-[0.4rem] px-4 text-sm mb-5 bg-white rounded-3xl animationSlideUp">{{$bannerBook->typeBook}}</span>
                     <h3 class="mb-8 text-6xl font-medium leading-tight text-center text-black font-playfair animationSlideUp2"
                         style="animation-delay: 0.4s">Book<br />{{$bannerBook->name}}</h3>
-                    <a href="/" class="py-4 font-semibold text-white rounded-full btnBeforeEffect px-11 animationScale"
+                    <a href="{{route('book_detail',['id'=>$bannerBook->id])}}"
+                        class="py-4 font-semibold text-white rounded-full btnBeforeEffect px-11 animationScale"
                         style="animation-delay: 0.6s">Watch More</a>
                 </div>
             </li>
@@ -56,9 +57,10 @@ Home
 <div class="py-24 overflow-hidden bg-lightPink_custom">
     <h2 class="text-3xl font-bold text-center font-playfair">Best Selling Books Ever</h2>
     <div class="relative mt-[3.875rem] max-w-[1300px] sm:mx-auto overflow-hidden px-3 mx-2">
-        <ul class="flex w-full item_best_selling_container">
+        <div class="flex w-full item_best_selling_container">
             @foreach($bestSellingBooks as $key => $bestSellingBook)
-            <li class="flex-shrink-0 w-full px-2 sm:px-3 item_best_selling sm:w-1/3 md:w-1/4 lg:w-1/6">
+            <a href="{{route('book_detail',['id'=>$bestSellingBook->id])}}"
+                class="flex-shrink-0 w-full px-2 sm:px-3 item_best_selling sm:w-1/3 md:w-1/4 lg:w-1/5">
                 <div class="bg-white cursor-pointer item">
                     <img class="object-contain w-full aspect-[2/3]"
                         src="{{asset('images/books/'.$bestSellingBook->image[0])}}" alt="item-image">
@@ -83,9 +85,9 @@ Home
                         </div>
                     </div>
                 </div>
-            </li>
+            </a>
             @endforeach
-        </ul>
+        </div>
         <i onclick="onClickSlideLeft()"
             class="absolute left-0 text-3xl -translate-y-1/2 cursor-pointer fa-solid fa-chevron-left top-1/2 text-gray_custom_2 hover:text-red_custom"></i>
         <i onclick="onClickSlideRight()"
@@ -122,9 +124,9 @@ Home
                         </div>
                         <div class="text-xs font-normal text-white">(120 Review)</div>
                     </div>
-                    <button
-                        class="px-10 py-4 mt-8 text-base font-medium text-white border border-white border-solid rounded-full outline-none btnBeforeEffectTopToDown hover:text-red_custom">View
-                        Details</button>
+                    <a href="{{route('book_detail',['id'=>$thisWeekBook->id])}}"
+                        class="inline-block px-10 py-4 mt-8 text-base font-medium text-white border border-white border-solid rounded-full outline-none btnBeforeEffectTopToDown hover:text-red_custom">View
+                        Details</a>
                 </div>
             </li>
             @endforeach
@@ -155,9 +157,10 @@ Home
             </ul>
         </div>
         <div id="slide_3" class="relative w-full overflow-x-hidden">
-            <ul id="slide_3_container" class="flex mt-5 transition-all cursor-default">
+            <div id="slide_3_container" class="flex mt-5 transition-all cursor-default">
                 @foreach($latestPublishedBooks as $key => $latestPublishedBook)
-                <li class="flex-shrink-0 w-1/2 px-1 bg-white md:px-2 lg:px-3 sm:w-1/4 md:w-1/5 lg:w-1/6 item_slide_3">
+                <a href="{{route('book_detail',['id'=>$latestPublishedBook->id])}}"
+                    class="flex-shrink-0 w-1/2 px-1 bg-white md:px-2 lg:px-3 sm:w-1/4 md:w-1/5 lg:w-1/5 item_slide_3">
                     <img class="object-cover w-full" src="{{asset('images/books/'.$latestPublishedBook->image[0])}}"
                         alt="item-image">
                     <div class="px-5 pt-3 pb-5">
@@ -181,9 +184,9 @@ Home
                             </div>
                         </div>
                     </div>
-                </li>
+                </a>
                 @endforeach
-            </ul>
+            </div>
             <button id="slide_3_left"
                 class="absolute left-0 z-10 px-2 -translate-y-1/2 bg-white border border-solid rounded-full outline-none aspect-square top-1/2 border-red_custom">
                 <i class="text-xl fa-solid fa-left-long text-darkRed_custom"></i>
@@ -229,16 +232,24 @@ Home
         <p class="mb-5 text-base font-normal text-center text-gray_custom_2">Discover a world of knowledge and a love
             for books at our store<br />where you can find thousands of books across a wide range of subjects, from
             literature to science, business and art<br />to meet all your reading needs.</p>
-        <form action="/" method="POST" class="flex flex-col items-center gap-3 md:flex-row">
+        <form action="{{route('send-email-join-us')}}" method="POST"
+            class="flex flex-col items-center gap-3 md:flex-row">
+            @csrf
             <input type="email"
                 class="px-6 py-4 text-base font-medium border border-solid rounded-full outline-none border-gray_custom"
-                type="text" placeholder="Enter your email">
+                type="text" placeholder="Enter your email" name="email">
             <button class="px-6 py-4 font-semibold text-white rounded-full bg-red_custom">Send</button>
         </form>
     </div>
     <div class="absolute bottom-0 left-0 w-full h-1/2 bg-lightPink_custom z-[-1]"></div>
 </div>
+
+@if(session('msg'))
+<x-toast type="infor" msg="{{session('msg')}}" />
+@endif
 @endsection
+
+
 
 @pushOnce('scripts')
 <script>
