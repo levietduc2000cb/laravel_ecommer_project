@@ -47,14 +47,15 @@
             const CART_NAME = @json(env('PRODUCTS_CART'));
             let cart = JSON.parse(localStorage.getItem(CART_NAME)) || [];
             let countQuantityProducts = document.getElementById('count_quantity_products');
-            if(cart.length > 0){
+            if(countQuantityProducts){
+                if(cart.length > 0){
                 countQuantityProducts.style.display = 'block';
                 countQuantityProducts.innerText = cart.length;
             }
-            else{
-                countQuantityProducts.style.display = 'none';
+                else{
+                    countQuantityProducts.style.display = 'none';
+                }
             }
-
 
             //Handle menu on mobile devices
             const menuNavigationList = document.querySelectorAll(".menu_navigation")

@@ -8,6 +8,7 @@
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Home</a></li>
             <li class="w-full lg:w-auto"><a href="{{route('category')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Categories</a></li>
+            @if(auth()->check())
             <li class="block w-full lg:w-auto lg:hidden"><a href="{{route('user_cart')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Cart
                     <span style="display: none" class="text-red_custom" id="count_quantity_products_mobile">
@@ -16,16 +17,20 @@
                 </a>
             </li>
             <li class="block w-full lg:w-auto lg:hidden"> <a href="{{route('user_track-order')}}"
-                    class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Track Order</a></li>
+                    class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Track Order</a>
+            </li>
+            @endif
             <li class="w-full lg:w-auto"> <a href="{{route('about')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">About</a></li>
             <li class="w-full lg:w-auto"><a href="{{route('blog')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Blog</a></li>
             <li class="w-full lg:w-auto"><a href="{{route('contact')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Contact</a></li>
+            @if(auth()->check())
             <li class="w-full lg:w-auto"><a href="{{route('user_profile')}}"
-                    class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Profile</a>
+                class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Profile</a>
             </li>
+            @endif
         </ul>
     </nav>
     <script>
@@ -34,13 +39,16 @@
             const CART_NAME = @json(env('PRODUCTS_CART'));
             let cart = JSON.parse(localStorage.getItem(CART_NAME)) || [];
             let countQuantityProducts = document.getElementById('count_quantity_products_mobile');
-            if(cart.length > 0){
-                countQuantityProducts.style.display = 'inline-block';
-                countQuantityProducts.innerText = `[${cart.length}]`;
+            if(countQuantityProducts){
+                if(cart.length > 0){
+                    countQuantityProducts.style.display = 'inline-block';
+                    countQuantityProducts.innerText = `[${cart.length}]`;
+                }
+                else{
+                    countQuantityProducts.style.display = 'none';
+                }
             }
-            else{
-                countQuantityProducts.style.display = 'none';
-            }
+
 
         });
     </script>

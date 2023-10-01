@@ -10,8 +10,8 @@ class Blogs extends Model
     use HasFactory;
     protected $table = 'blogs';
 
-    protected $fillable = ['title','written_by','abstract','image_title','content','blog_type_id'];
+    protected $fillable = ['title','written_by','abstract','image_title','content','blog_type_id','list_image_ckeditor'];
     protected $guarded = ['id','created_at','updated_at'];
-    protected $casts = ['name'=>'string','written_by'=>'string','abstract'=>'string','image_title'=>'string','content'=>'string','blog_type_id'=>'integer'];
+    protected $casts = ['name'=>'string','written_by'=>'string','abstract'=>'string','image_title'=>'string','content'=>'string','blog_type_id'=>'integer','list_image_ckeditor'=>'array'];
 
 }

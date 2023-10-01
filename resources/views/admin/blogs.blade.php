@@ -56,7 +56,7 @@ Blogs
             <label for="open_modal_create_type" class="flex items-center justify-center w-full px-2 py-2 text-white rounded cursor-pointer sm:w-auto bg-blue_custom">Create a new type</label>
             <input type="checkbox" id="open_modal_create_type" hidden>
             <div id="modal_create_type" class="fixed !bg-[rgba(0,0,0,0.5)] top-0 left-0 right-0 h-screen flex justify-center items-center">
-                <form action="{{route('admin_types_store')}}" method="post" class="w-11/12 max-h-screen p-4 overflow-y-scroll bg-white rounded md:overflow-visible md:w-7/12">
+                <form action="{{route('admin_types_blog_store')}}" method="post" class="w-11/12 max-h-screen p-4 overflow-y-scroll bg-white rounded md:overflow-visible md:w-7/12">
                     <div class="flex justify-end"><label for="open_modal_create_type"><i class="text-xl cursor-pointer fa-solid fa-xmark"></i></label></div>
                     <h2 class="mb-4 text-2xl font-bold text-center">Type</h2>
                     @csrf
@@ -87,48 +87,29 @@ Blogs
             </tr>
         </thead>
         <tbody>
-            <tr class="bg-white tr">
-                <td>
-                    <div class="flex items-center gap-2 py-2 pl-3">
-                        <img class="hidden object-cover w-12 md:block aspect-[1/1.125] rounded-sm" src="https://img.freepik.com/free-vector/blogging-fun-content-creation-online-streaming-video-blog-young-girl-making-selfie-social-network-sharing-feedback-self-promotion-strategy-vector-isolated-concept-metaphor-illustration_335657-855.jpg?w=2000" alt="avatar_customer">
-                        <span class="font-bold">#1</span>
-                    </div>
-                </td>
-                <td class="hidden sm:table-cell">
-                    <div class="flex items-center gap-2">
-                        <span class="truncate">Ngày em đi trời đổ cơn bão</span>
-                    </div>
-                </td>
-                <td class="hidden capitalize md:table-cell">Phạm Huy Hoàng</td>
-                <td class="hidden md:table-cell">25/12/2023</td>
-                <td class="py-3 pr-4">
-                    <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                        <a href="" type="button" class="block w-20 text-center text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Edit</a>
-                        <button type="button" class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
-                    </div>
-                </td>
-            </tr>
-            <tr class="bg-white tr">
-                <td>
-                    <div class="flex items-center gap-2 py-2 pl-3">
-                        <img class="hidden object-cover w-12 md:block aspect-[1/1.125] rounded-sm" src="https://img.freepik.com/free-vector/blogging-fun-content-creation-online-streaming-video-blog-young-girl-making-selfie-social-network-sharing-feedback-self-promotion-strategy-vector-isolated-concept-metaphor-illustration_335657-855.jpg?w=2000" alt="avatar_customer">
-                        <span class="font-bold">#1</span>
-                    </div>
-                </td>
-                <td class="hidden sm:table-cell">
-                    <div class="flex items-center gap-2">
-                        <span class="truncate">Ngày em đi trời đổ cơn bão</span>
-                    </div>
-                </td>
-                <td class="hidden capitalize md:table-cell">Phạm Huy Hoàng</td>
-                <td class="hidden md:table-cell">25/12/2023</td>
-                <td class="py-3 pr-4">
-                    <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
-                        <a href="" type="button" class="block w-20 text-center text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Edit</a>
-                        <button type="button" class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
-                    </div>
-                </td>
-            </tr>
+            @foreach($blogs as $key => $blog)
+                <tr class="bg-white tr">
+                    <td>
+                        <div class="flex items-center gap-2 py-2 pl-3">
+                            <img class="hidden object-cover w-12 md:block aspect-[1/1.125] rounded-sm" src="{{asset('images/blogs/'.$blog->image_title)}}" alt="avatar_customer">
+                            <span class="font-bold">#{{$blog->id}}</span>
+                        </div>
+                    </td>
+                    <td class="hidden sm:table-cell">
+                        <div class="flex items-center gap-2">
+                            <span class="truncate">{{$blog->title}}</span>
+                        </div>
+                    </td>
+                    <td class="hidden capitalize md:table-cell">{{$blog->written_by}}</td>
+                    <td class="hidden md:table-cell">{{convertDateTime($blog->updated_at)}}</td>
+                    <td class="py-3 pr-4">
+                        <div class="flex flex-col items-end gap-2 justify-evenly sm:items-center sm:justify-end sm:flex-row">
+                            <a href="{{route('admin_blog_edit_page',['id'=>$blog->id])}}" class="block w-20 text-center text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-blue_custom">Edit</a>
+                            <button type="button" onclick="openModalDelete(`{{$blog->title}}`,'{{$blog->id}}','{{route('admin_blog_destroy',$blog->id)}}')" class="w-20 text-white rounded sm:w-auto sm:px-2 sm:py-1 bg-red_custom">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
     {{-- <div class="flex justify-center mt-5">

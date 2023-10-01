@@ -50,7 +50,6 @@ Route::group([],function () {
     Route::prefix('/')->group(function () {
         //Home
         Route::get('/',[BooksController::class, 'userBooksHome'])->name("home");
-
         //Category
         Route::get('/category',function () {
             return view('user/category');
@@ -60,9 +59,8 @@ Route::group([],function () {
             return view('user/about');
         })->name("about");
         //Blog
-        Route::get('/blog',function(){
-            return view('user/blog');
-        })->name("blog");
+        Route::get('/blog-detail/{id}',[BlogsController::class, 'useBlogDetail'])->name('blog_detail');
+        Route::get('/blog',[BlogsController::class, 'userBlogs'])->name('blog');
         //Contact
         Route::get('/contact',function(){
             return view('user/contact');
@@ -146,8 +144,11 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
         Route::prefix('/blogs')->group(function(){
             Route::get('/',[BlogsController::class,'indexAdmin'])->name('admin_blogs');
             Route::post('/ckeditor-upload',[BlogsController::class,'ckeditorUploadImage'])->name('ckeditor_upload');
-            Route::get('/create',[BlogsController::class,'create'])->name('admin_blog_create_page');
             Route::post('/create',[BlogsController::class,'store'])->name('admin_blog_store');
+            Route::get('/edit/{id}',[BlogsController::class,'edit'])->name('admin_blog_edit_page');
+            Route::delete('/{id}',[BlogsController::class,'destroy'])->name('admin_blog_destroy');
+            Route::get('/create',[BlogsController::class,'create'])->name('admin_blog_create_page');
+            Route::post('/types_blog',[BlogsController::class, 'typesBlogStore'])->name('admin_types_blog_store');
         });
         //Search
         Route::get('customers/search-name',[UsersController::class, 'searchName'])->name('admin_customers_search');

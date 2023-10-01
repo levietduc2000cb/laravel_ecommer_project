@@ -1,7 +1,7 @@
 @extends('admin/layout.app')
 
 @section('title')
-New blog
+Edit blog
 @endsection
 
 @section('sidebar')
@@ -10,7 +10,7 @@ New blog
 
 @section('header')
 {{-- Header --}}
-<x-admin-header title="New blog"></x-admin-header>
+<x-admin-header title="Edit blog #{{$blog->id}}"></x-admin-header>
 @endsection
 
 @section('footer')
@@ -28,32 +28,31 @@ New blog
            <div class="flex-1 mt-1">
                 <div>
                     <label for="blog_title" class="block">Title</label>
-                    <input type="text" id="blog_title" required name="title" placeholder="Input blog's title" value="Blog's title" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
+                    <input type="text" id="blog_title" required name="title" placeholder="Input blog's title" value="{{$blog->title}}" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
                     <p class="invisible peer-invalid:visible text-red_custom">Please enter blog's title</p>
                 </div>
                 <div>
                     <label for="blog_title" class="block">Written by</label>
-                    <input type="text" id="written_by" required name="written_by" placeholder="Input blog's writer" value="Blog's writer" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
+                    <input type="text" id="written_by" required name="written_by" placeholder="Input blog's writer" value="{{$blog->written_by}}" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
                     <p class="invisible peer-invalid:visible text-red_custom">Please enter written by</p>
                 </div>
                <div>
                     <label for="abstract" class="block">Abstract</label>
-                    <input type="text" id="abstract" required name="abstract" placeholder="Input blog's abstract" value="Blog's abstract" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
+                    <input type="text" id="abstract" required name="abstract" placeholder="Input blog's abstract" value="{{$blog->abstract}}" class="w-full px-2 py-2 mt-1 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3">
                     <p class="invisible peer-invalid:visible text-red_custom">Please enter blog's abstract</p>
                </div>
                 <div>
                     <label for="blogtypes" class="block">Blog types</label>
                     <select name="blogtypes" class="w-full px-2 py-2 border border-solid border-gray_custom_2">
                         @foreach($types as $key => $type)
-                            <option class="w-full" value="{{$type->id}}" @selected($key == 0)>{{$type->name}}</option>
+                            <option class="w-full" value="{{$type->id}}" @selected($blog->blog_type_id == $type->id)>{{$type->name}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
-            <input type="text" id="list_images_ckeditor" name="list_images_ckeditor" value="" placeholder="" hidden>
             <div class="flex items-center justify-center flex-1">
                 <label for="image_title" class="block w-full cursor-pointer">
-                    <img src="{{asset('images/books/no-image.jpg')}}" alt="image_title" class="w-full border border-solid rounded-md aspect-[2/1] object-contain border-darkRed_custom">
+                    <img src="{{(isset($blog->image_title) ? asset('images/blogs/'.$blog->image_title) : asset('images/books/no-image.jpg'))}}" alt="image_title" class="w-full border border-solid rounded-md aspect-[2/1] object-contain border-darkRed_custom">
                 </label>
                 <input onchange="changeInputImg(event)" type="file" id="image_title" name="image_title" placeholder="Input blog's title" class="w-full px-2 py-2 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3" hidden>
             </div>
@@ -63,7 +62,7 @@ New blog
         </div>
         <div class="flex flex-col-reverse justify-end gap-4 sm:flex-row">
             <a href="{{route('admin_blogs')}}" class="inline-block w-full h-full px-4 py-3 mt-2 text-center text-white rounded cursor-pointer sm:w-40 bg-darkRed_custom">Back</a>
-            <button type="submit" class="inline-block w-full h-full px-4 py-3 mt-2 text-white rounded cursor-pointer sm:w-auto bg-blue_custom">Create a new blog</button>
+            <button type="submit" class="inline-block w-full h-full px-4 py-3 mt-2 text-white rounded cursor-pointer sm:w-auto bg-blue_custom">Update blog</button>
         </div>
     </form>
 </main>
@@ -82,8 +81,6 @@ New blog
 @endPushOnce
 @pushOnce('scripts_low')
     <script>
-    let list_images_ckeditor_document = document.getElementById('list_images_ckeditor');
-    let list_images_ckeditor = [];
     //Upload image in ckeditor
     class MyUploadAdapter {
 
@@ -142,12 +139,11 @@ New blog
             if ( !response || response.error ) {
                 return reject( response && response.error ? response.error.message : genericErrorText );
             }
+
             // If the upload is successful, resolve the upload promise with an object containing
             // at least the "default" URL, pointing to the image on the server.
             // This URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
-            list_images_ckeditor.push(response.url);
-            list_images_ckeditor_document.value = list_images_ckeditor.join(',');
             resolve( {
                 default: response.url
             } );
@@ -192,8 +188,8 @@ New blog
         ClassicEditor
             .create( document.querySelector( '#editor' ),{
         extraPlugins: [ MyCustomUploadAdapterPlugin ],
-        }).then(()=>{
-            console.log("Upload file successfully uploaded");
+        }).then((editor)=>{
+            editor.setData('{!! $blog->content !!}')
         })
         .catch( error => {
             console.error( error );

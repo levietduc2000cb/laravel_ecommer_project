@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('abstract');
             $table->string('image_title')->nullable();
             $table->longText('content');
+            $table->json('list_image_ckeditor')->nullable();
             $table->timestamps();
         });
     }
