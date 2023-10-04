@@ -4,9 +4,14 @@
     Setting
 @endsection
 
+@pushOnce('header_link')
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+@endPushOnce
+
 @section('sidebar')
     @include('admin/layout/sidebar')
 @endsection
+
 
 @section('header')
     {{-- Header --}}
@@ -19,23 +24,43 @@
 @endsection
 
 @section('content')
+    @php
+        $address =explode(",", auth()->user()->address);
+    @endphp
     {{-- Content --}}
     <main>
         <div class="flex flex-col gap-4">
             <form action="/" method="POST" class="flex-1 p-4 border border-solid rounded border-blue_custom">
                 <h2 class="text-xl font-bold text-center text-blue_custom">Profile</h2>
-                <div class="flex justify-center my-2"><img src="" alt="avatar" class="w-20 border border-solid rounded-full cursor-pointer aspect-square border-gray_custom"></div>
+                <label for="avatar" class="flex justify-center my-2">
+                    <img class="w-20 border border-solid rounded-full cursor-pointer avatar_img aspect-square border-gray_custom"
+                        src="{{isset(auth()->user()->avatarUrl) ? asset('images/users/'.auth()->user()->avatarUrl) : asset('images/books/no-image.jpg')}}"
+                        alt="avatar_square">
+                </label>
+                <input placeholder="file" type="file" hidden id="avatar" name="avatar" onchange="handleUpdateAvatar(event)">
                 <div>
                     <label for="name" class="block mb-1">Name</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text" value="{{auth()->user()->fullName}}">
                 </div>
                 <div>
-                    <label for="name" class="block mb-1">Email</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                    <label for="email" class="block mb-1">Email</label>
+                    <input name="email" class="w-full px-2 py-2 border border-solid border-gray_custom" type="email" value="{{auth()->user()->email}}">
                 </div>
                 <div>
-                    <label for="name" class="block mb-1">Address</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                    <label for="province" class="block mb-1">Province</label>
+                    <input name="province" value="{{$address[0]}}" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                </div>
+                <div>
+                    <label for="town" class="block mb-1">Town</label>
+                    <input name="town" value="{{$address[1]}}" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                </div>
+                <div>
+                    <label for="district" class="block mb-1">District</label>
+                    <input name="district" value="{{$address[2]}}" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                </div>
+                <div>
+                    <label for="location" class="block mb-1">Location</label>
+                    <input name="location" value="{{$address[3]}}" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
                 </div>
                 <button type="submit" class="w-full px-6 py-3 mt-4 text-white rounded-md bg-blue_custom">Save</button>
             </form>
@@ -59,6 +84,20 @@
     </main>
      {{-- Footer --}}
 @endsection
+@pushOnce('scripts')
+<script>
+    function handleUpdateAvatar(event){
+
+        let avatarFile = event.target.files[0];
+
+        let urlAvatar = URL.createObjectURL(avatarFile);
+
+        let imgElement = document.querySelector(".avatar_img");
+
+        imgElement.src = urlAvatar;
+    }
+</script>
+@endPushOnce
 
 
 

@@ -45,6 +45,7 @@ Route::prefix('/logout')->group(function () {
 
 //Handle search bar action
 Route::get('books/search-name',[BooksController::class, 'searchName'])->name('admin_books_search');
+Route::get('blogs/search-name',[BlogsController::class, 'searchName'])->name('admin_blogs_search');
 
 Route::group([],function () {
     Route::prefix('/')->group(function () {
@@ -146,6 +147,7 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
             Route::post('/ckeditor-upload',[BlogsController::class,'ckeditorUploadImage'])->name('ckeditor_upload');
             Route::post('/create',[BlogsController::class,'store'])->name('admin_blog_store');
             Route::get('/edit/{id}',[BlogsController::class,'edit'])->name('admin_blog_edit_page');
+            Route::put('/edit/{id}',[BlogsController::class,'update'])->name('admin_blog_update');
             Route::delete('/{id}',[BlogsController::class,'destroy'])->name('admin_blog_destroy');
             Route::get('/create',[BlogsController::class,'create'])->name('admin_blog_create_page');
             Route::post('/types_blog',[BlogsController::class, 'typesBlogStore'])->name('admin_types_blog_store');

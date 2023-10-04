@@ -22,8 +22,9 @@ Edit blog
 {{-- Title --}}
 {{-- Content --}}
 <main>
-    <form action="{{route('admin_blog_store')}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('admin_blog_update',['id'=>$blog->id])}}" method="post" enctype="multipart/form-data">
         @csrf
+        @method('put')
         <div class="flex flex-col-reverse gap-8 md:flex-row">
            <div class="flex-1 mt-1">
                 <div>
@@ -60,6 +61,7 @@ Edit blog
         <div class="border border-black border-solid mt-7 min-h-[300px] rounded-sm">
             <textarea placeholder="Blog's content" name="content" id="editor"></textarea>
         </div>
+        <input type="text" id="list_images_ckeditor" name="list_images_ckeditor" value="" placeholder="" hidden>
         <div class="flex flex-col-reverse justify-end gap-4 sm:flex-row">
             <a href="{{route('admin_blogs')}}" class="inline-block w-full h-full px-4 py-3 mt-2 text-center text-white rounded cursor-pointer sm:w-40 bg-darkRed_custom">Back</a>
             <button type="submit" class="inline-block w-full h-full px-4 py-3 mt-2 text-white rounded cursor-pointer sm:w-auto bg-blue_custom">Update blog</button>
@@ -81,6 +83,8 @@ Edit blog
 @endPushOnce
 @pushOnce('scripts_low')
     <script>
+    let list_images_ckeditor_document = document.getElementById('list_images_ckeditor');
+    let list_images_ckeditor = [];
     //Upload image in ckeditor
     class MyUploadAdapter {
 
@@ -144,6 +148,8 @@ Edit blog
             // at least the "default" URL, pointing to the image on the server.
             // This URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
+            list_images_ckeditor.push(response.url);
+            list_images_ckeditor_document.value = list_images_ckeditor.join(',');
             resolve( {
                 default: response.url
             } );

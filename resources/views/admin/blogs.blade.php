@@ -47,7 +47,7 @@ Blogs
 {{-- Title --}}
 {{-- Content --}}
 <main>
-    <x-admin-search-bar route-name="admin_books" search={{$search}} placeholder="Find book" route-search="/books/search-name"></x-admin-search-bar>
+    <x-admin-search-bar route-name="admin_blogs" search={{$search}} placeholder="Find blog" route-search="/blogs/search-name"></x-admin-search-bar>
     <div class="flex flex-col sm:flex-row gap-x-3">
         <div class="flex justify-start mt-2">
             <a href="{{route('admin_blog_create_page')}}" class="flex items-center justify-center w-full px-2 py-2 text-center text-white rounded cursor-pointer sm:w-auto bg-darkRed_custom">Create a new blog</a>
@@ -91,7 +91,7 @@ Blogs
                 <tr class="bg-white tr">
                     <td>
                         <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 md:block aspect-[1/1.125] rounded-sm" src="{{asset('images/blogs/'.$blog->image_title)}}" alt="avatar_customer">
+                            <img class="hidden object-cover w-12 md:block aspect-[1/1.125] rounded-sm" src="{{(isset($blog->image_title) ? asset('images/blogs/'.$blog->image_title) : asset('images/books/no-image.jpg'))}}" alt="avatar_customer">
                             <span class="font-bold">#{{$blog->id}}</span>
                         </div>
                     </td>

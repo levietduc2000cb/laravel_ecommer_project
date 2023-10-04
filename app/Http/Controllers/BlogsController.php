@@ -93,7 +93,7 @@ class BlogsController extends Controller
         $blog['title'] = $request->title;
         $blog['written_by'] = $request->written_by;
         $blog['abstract'] = $request->abstract;
-        $blog['list_image_ckeditor'] = $request->list_images_ckeditor;
+        $blog['list_image_ckeditor'] = json_encode(explode(",",$request->list_images_ckeditor));
         $nameFile = 'image_title';
         if($request->hasFile($nameFile)){
             $timestamp = round(microtime(true) * 1000);
@@ -132,25 +132,78 @@ class BlogsController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // Logic for updating a book in the database
+        $blogDB = Blogs::where('id',$id)->first();
+        $blog = [];
+        $blog['blog_type_id'] = $request->blogtypes;
+        $blog['title'] = $request->title;
+        $blog['written_by'] = $request->written_by;
+        $blog['abstract'] = $request->abstract;
+        //Check upload add image in ckeditor and push into database
+        if(isset($request->list_images_ckeditor)){
+            $blog['list_image_ckeditor'] = json_decode($blogDB->list_image_ckeditor);
+            $listImagesCkeditor = explode(",",$request->list_images_ckeditor);
+            for ($i=0; $i < count($listImagesCkeditor); $i++) {
+                array_push($blog['list_image_ckeditor'],$listImagesCkeditor[$i]);
+            }
+            $blog['list_image_ckeditor'] = json_encode($blog['list_image_ckeditor']);
+        }
+        //Check has image title to delete and change it
+        $nameFile = 'image_title';
+        if($request->hasFile($nameFile)){
+            $path = public_path("images/blogs/".$blogDB->image_title);
+            if(File::exists($path)){
+                File::delete($path);
+            };
+            $timestamp = round(microtime(true) * 1000);
+            $imageName = $timestamp.$request->file($nameFile)->getClientOriginalName();
+            $request->file($nameFile)->move(public_path('images/blogs'),$imageName);
+            $blog['image_title'] = $imageName;
+        };
+        $blog['content'] = $request->content;
+        $res = Blogs::where('id', $id)->update($blog);
+        if($res){
+            return back()->with("msg","Blog updated successfully!");
+        }else{
+            return back()->with("ms_error","Blog updated failed!");
+        }
     }
 
     public function destroy($id)
     {
         //Select image from database has id
-        error_log($id);
-        $res = Blogs::where('id', $id)->get();
+        $blog = Blogs::where('id', $id)->first();
         //Create a path to contains images in public folder
-        $image = $res[0]->image_title;
+        $image = $blog->image_title;
         if(isset($image)){
             $path = public_path("images/blogs/".$image);
             if(File::exists($path)){
                 File::delete($path);
             };
         }
+        $listImageCkeditor = json_decode($blog->list_image_ckeditor);
+        if(count($listImageCkeditor)>0){
+            foreach ($listImageCkeditor as $key => $image) {
+                //Cut string to get folder and file
+                $storage = explode("storage", $image);
+                $folder = explode("/",$storage[1])[1];
+                $fileExtension = explode("/",$storage[1])[2];
+                $fileName = explode(".",$fileExtension)[0];
+                //Create path to folder
+                $folderPath = public_path("storage/".$folder);
+                //Check folder exists
+                if (File::isDirectory($folderPath)) {
+                    //Delete folder
+                    File::deleteDirectory($folderPath);
+                }
+                if(isset($fileName)){
+                    $sql = "DELETE  FROM media WHERE `name` = "."'".$fileName."'";
+                    DB::select($sql);
+                }
+            }
+        }
         //Handle delete from database has id
-        $res = Blogs::where('id', $id)->delete();
-        if($res){
+        $blog = Blogs::where('id', $id)->delete();
+        if($blog){
             return back()->with('msg','Blog deleted successfully!');
         }
         return back()->with('ms_error','Blog deleted failed!');
@@ -162,5 +215,14 @@ class BlogsController extends Controller
             return back()->with("msg","Type created successfully!");
         }
         return back()->withErrors("msg","Type created failed!");
+    }
+
+    public function searchName(Request $request){
+        if($request->has('search')){
+            $blogs = Blogs::where('title','like','%'.$request->query('search').'%')->take(10)->get('title');
+            return response()->json($blogs,200);
+        }
+        return response()->json(null,200);
+
     }
 }
