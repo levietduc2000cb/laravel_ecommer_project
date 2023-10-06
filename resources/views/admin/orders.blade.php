@@ -60,7 +60,7 @@
                 <tr class="bg-white cursor-pointer">
                     <td class="hidden sm:table-cell">
                         <div class="flex items-center gap-2 py-2 pl-3">
-                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="{{asset('images/users/'.$order->avatarUrl)}}" alt="avatar_customer">
+                            <img class="hidden object-cover w-12 rounded-full md:block aspect-square" src="{{(isset($order->avatarUrl)?asset('images/users/'.$order->avatarUrl):asset('images/books/no-image.jpg'))}}" alt="avatar_customer">
                             <span class="font-bold">{{$order->fullName}}</span>
                         </div>
                     </td>

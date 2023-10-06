@@ -112,6 +112,11 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="w-full">
+                            <label for="quantity" class="block">Quantity</label>
+                            <input type="number" id="quantity" min="1" name="quantity" required placeholder="Input book's quantity" class="w-full px-2 py-2 border border-solid outline-none peer border-gray_custom focus:border-gray_custom_3" value="{{$book[0]->quantity}}">
+                            <p class="invisible peer-invalid:visible text-red_custom">Please enter book's quantity</p>
+                        </div>
                         <div class="flex h-12 gap-2 sm:gap-4">
                             <a href="{{route('admin_books')}}" class="flex items-center justify-center flex-1 h-full rounded cursor-pointer hover:bg-gray_custom_2 bg-gray_custom">Close</a>
                             <button type="submit" class="flex-1 h-full text-white rounded cursor-pointer bg-blue_custom hover:opacity-90">Update</button>

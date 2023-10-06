@@ -21,7 +21,7 @@ function setProcessBar1($status){
     if($status == 0){
     return 'active1';
     }
-    else if($status > 1){
+    else if($status >= 1){
     return 'active1 active2 active';
     }
     return ;

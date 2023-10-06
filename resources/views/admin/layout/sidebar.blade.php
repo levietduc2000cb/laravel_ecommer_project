@@ -31,7 +31,7 @@
                 class="block px-4 py-3 text-base cursor-pointer text-gray_custom_2 hover:text-white">
                 <i class="w-9 fa-solid fa-house"></i>Overview
             </a>
-            <a href="{{route('analystics')}}"
+            <a href="{{route('admin_analystics')}}"
                 class="block px-4 py-3 text-base cursor-pointer text-gray_custom_2 hover:text-white">
                 <i class="w-9 fa-solid fa-chart-simple"></i>Analystics
             </a>

@@ -21,28 +21,6 @@
 @section('content')
 
     @php
-        $topCustomers = [
-        ['name' => 'Nam Hoàng'],
-        ['name' => 'Lê Trọng'],
-        ['name' => 'Bùi Vũ'],
-        ['name' => 'Nam Trang'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-        ['name' => ' Nam'],
-    ];
-
-    $topBooks = [
-        ['id'=>'1', 'name'=>'Đắc nhân tâm', 'author'=>'Tác giả','price'=>12000,'quantity'=>10000,'created_at'=>'12/12/2022'],
-        ['id'=>'1', 'name'=>'Đắc nhân tâm', 'author'=>'Tác giả','price'=>12000,'quantity'=>10000,'created_at'=>'12/12/2022'],
-        ['id'=>'1', 'name'=>'Đắc nhân tâm', 'author'=>'Tác giả','price'=>12000,'quantity'=>10000,'created_at'=>'12/12/2022'],
-        ['id'=>'1', 'name'=>'Đắc nhân tâm', 'author'=>'Tác giả','price'=>12000,'quantity'=>10000,'created_at'=>'12/12/2022'],
-        ['id'=>'1', 'name'=>'Đắc nhân tâm', 'author'=>'Tác giả','price'=>12000,'quantity'=>10000,'created_at'=>'12/12/2022']
-    ];
-
     function topRankStyle($index){
         switch($index){
             case 0: return "text-red_custom font-extrabold";
@@ -64,21 +42,21 @@
                             <span class="flex items-center justify-center w-10 bg-white rounded-md aspect-square"><i class="fa-solid fa-users"></i></span>
                             <span class="text-base font-bold">Total Customers</span>
                        </div>
-                       <div class="mt-2 text-3xl font-bold">1000</div>
+                       <div class="mt-2 text-3xl font-bold">{{(isset($totalCustomers)?$totalCustomers:0)}}</div>
                     </div>
                     <div class="p-4 rounded-lg bg-light_yellow">
                         <div class="flex items-center gap-x-2">
                              <span class="flex items-center justify-center w-10 bg-white rounded-md aspect-square"><i class="fa-solid fa-file-invoice"></i></span>
                              <span class="text-base font-bold">Total Orders</span>
                         </div>
-                        <div class="mt-2 text-3xl font-bold">1000</div>
+                        <div class="mt-2 text-3xl font-bold">{{(isset($totalOrders)?$totalOrders:0)}}</div>
                      </div>
                      <div class="p-4 rounded-lg bg-light_purple">
                         <div class="flex items-center gap-x-2">
                              <span class="flex items-center justify-center w-10 bg-white rounded-md aspect-square"><i class="fa-solid fa-money-bill"></i></span>
                              <span class="text-base font-bold">Total Revenue</span>
                         </div>
-                        <div class="mt-2 text-3xl font-bold">100.000 đ</div>
+                        <div class="mt-2 text-3xl font-bold">{{(isset($totalRevenue)?convertToMoney((int)$totalRevenue):0)}} đ</div>
                      </div>
                 </div>
                 <div class="mt-4">
@@ -96,7 +74,7 @@
                 </div>
                 <ul class="flex flex-col justify-between">
                     @foreach ($topCustomers as $index=>$customer)
-                        <li class="grid grid-cols-[1fr,2fr] text-center py-2 truncate {{topRankStyle($index)}}"><span>{{$index}}</span><span>{{$customer['name']}}</span></li>
+                        <li class="grid grid-cols-[1fr,2fr] text-center py-2 truncate {{topRankStyle($index)}}"><span>{{$index}}</span><span>{{$customer->name}}</span></li>
                     @endforeach
                 </ul>
             </div>
@@ -154,15 +132,28 @@
 @push('scripts_low')
     {{-- Scrip create a line chart --}}
     <script>
+        let lineRevenue = <?php echo json_encode($lineChartRevenue)?>;
         //Create line chart;
         //Get 12 months in a year from past to current month
         function getMonths(){
-            const currentDate = new Date();
-            const months = [];
+            let currenMonth;
+            let currenYear;
+            let months = [];
             for (let i = 0; i < 12; i++) {
-            const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i);
-            const monthName = monthDate.toLocaleString('default', { month: 'long' });
-            months.unshift(monthName);
+                if(lineRevenue[i]){
+                    currenMonth = parseInt(lineRevenue[i].month);
+                    currenYear = parseInt(lineRevenue[i].year);
+                }
+                else{
+                    if(currenMonth - 1 < 1){
+                        currenMonth = 12;
+                        currenYear = currenYear - 1;
+                    }
+                    else{
+                        currenMonth = currenMonth - 1;
+                    }
+                }
+                months.unshift(currenMonth + "/" + currenYear);
             }
 
             return months;
@@ -174,7 +165,16 @@
         //Label from January to December
         const labels = getMonths();
         //Data from January to December
-        const data = [12, 19, 3, 5, 2, 3,12,4,5,10,30,12]
+        let data = [];
+        for (let index = 0; index < 12; index++) {
+            if(lineRevenue[index]){
+                data.unshift(parseInt(lineRevenue[index].total))
+            }
+            else{
+                data.unshift(0);
+            }
+
+        }
         //Config to line chart
         const config = {
         type: 'line',
@@ -217,7 +217,7 @@
         //Label Books, Customers, Orders
         const labelsDoughnut = ['Books','Customers','Orders'];
         //Data Books, Customers, Orders
-        const dataDoughnut = [300, 50, 100];
+        const dataDoughnut = [<?php echo $totalBooks; ?>, <?php echo $totalCustomers; ?>, <?php echo $totalOrders; ?>];
         //Config to doughnut chart
         const configDoughnut = {
         type: 'doughnut',

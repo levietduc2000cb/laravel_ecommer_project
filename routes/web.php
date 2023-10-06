@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     OrdersController,
     SupportController,
     TypesController,
-    BlogsController
+    BlogsController,
+    AnalysticController
 };
 use App\Models\Users;
 
@@ -106,7 +107,7 @@ Route::group(['middleware'=>['auth','user-access:0']],function () {
 Route::group(['middleware'=>['auth','user-access:1']],function () {
     Route::prefix('/admin')->group(function () {
         Route::get('/',[AdminController::class, 'index'])->name('overview');
-        Route::get('/analystics',function(){return view('admin/analystics');})->name('analystics');
+        Route::get('/analystics',[AnalysticController::class,'index'])->name('admin_analystics');
         Route::get('/setting',[SettingController::class, 'indexAdmin'])->name('admin_setting');
         //Type route
         Route::prefix('/type')->group(function () {
@@ -156,5 +157,9 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
         Route::get('customers/search-name',[UsersController::class, 'searchName'])->name('admin_customers_search');
         Route::get('faqs/search-name',[FAQController::class, 'searchName'])->name('admin_faqs_search');
         Route::get('orders/search-name',[FAQController::class, 'searchName'])->name('admin_faqs_search');
+        //Setting
+        Route::put('/account',[ProfileController::class, 'changePassword'])->name('admin_password_update');
+        Route::put('/{id}',[ProfileController::class, 'update'])->name('admin_profile_update');
+
     });
 });

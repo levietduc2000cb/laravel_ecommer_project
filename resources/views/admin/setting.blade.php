@@ -30,7 +30,9 @@
     {{-- Content --}}
     <main>
         <div class="flex flex-col gap-4">
-            <form action="/" method="POST" class="flex-1 p-4 border border-solid rounded border-blue_custom">
+            <form action="{{route('admin_profile_update',['id'=>auth()->user()->id])}}" method="POST" class="flex-1 p-4 border border-solid rounded border-blue_custom" enctype="multipart/form-data">
+                @csrf
+                @method('put')
                 <h2 class="text-xl font-bold text-center text-blue_custom">Profile</h2>
                 <label for="avatar" class="flex justify-center my-2">
                     <img class="w-20 border border-solid rounded-full cursor-pointer avatar_img aspect-square border-gray_custom"
@@ -39,8 +41,8 @@
                 </label>
                 <input placeholder="file" type="file" hidden id="avatar" name="avatar" onchange="handleUpdateAvatar(event)">
                 <div>
-                    <label for="name" class="block mb-1">Name</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text" value="{{auth()->user()->fullName}}">
+                    <label for="fullName" class="block mb-1">Name</label>
+                    <input name="fullName" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text" value="{{auth()->user()->fullName}}">
                 </div>
                 <div>
                     <label for="email" class="block mb-1">Email</label>
@@ -64,24 +66,31 @@
                 </div>
                 <button type="submit" class="w-full px-6 py-3 mt-4 text-white rounded-md bg-blue_custom">Save</button>
             </form>
-            <form action="" method="POST" class="flex-1 p-4 border border-solid rounded border-red_custom">
+            <form action="{{route('admin_password_update')}}" method="POST" class="flex-1 p-4 border border-solid rounded border-red_custom">
+                @csrf
+                @method('put')
                 <h2 class="text-xl font-bold text-center text-darkRed_custom">Setting</h2>
                 <div>
-                    <label for="name" class="block mb-1">Password</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                    <label for="password" class="block mb-1">Password</label>
+                    <input name="password" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
                 </div>
                 <div>
-                    <label for="name" class="block mb-1">New Password</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
-                </div>
-                <div>
-                    <label for="name" class="block mb-1">Repeat New Password</label>
-                    <input class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
+                    <label for="new_password" class="block mb-1">New Password</label>
+                    <input name="new_password" class="w-full px-2 py-2 border border-solid border-gray_custom" type="text">
                 </div>
                 <button type="submit" class="w-full px-6 py-3 mt-4 text-white rounded-md bg-darkRed_custom">Save</button>
             </form>
         </div>
     </main>
+
+@if(session('ms_error'))
+<x-toast type="error" msg="{{session('ms_error')}}" />
+@endif
+
+{{-- Notification when success --}}
+@if(session('msg'))
+<x-toast type="infor" msg="{{session('msg')}}" />
+@endif
      {{-- Footer --}}
 @endsection
 @pushOnce('scripts')

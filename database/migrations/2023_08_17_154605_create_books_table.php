@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('cover');
             $table->string('type');
             $table->json('image')->nullable();
+            $table->integer('quantity');
+            $table->integer('quantity_order_number')->nullable();
             $table->timestamps();
         });
     }

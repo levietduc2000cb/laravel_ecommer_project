@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Books;
 use Illuminate\Http\Request;
 
 
@@ -79,8 +80,21 @@ class OrdersController extends Controller
     public function update(Request $request, $id)
     {
         // Logic for updating a book in the database
-        $order = Orders::where('id', $id)->select('status')->first();
+        $order = Orders::where('id', $id)->select('status','products')->first();
+        $products = json_decode($order->products);
         (int)$status = $order->status;
+        if($status==0){
+            foreach ($products as $book) {
+                $bookId = $book->id;
+                $bookDB = Books::where('id', $bookId)->select('quantity','quantity_order_number')->first();
+                $quantity = (int)$bookDB->quantity - (int)$book->quantity;
+                $quantityOrderNumber = (int)$bookDB->quantity_order_number + (int)$book->quantity;
+                $book = [];
+                $book['quantity'] = $quantity;
+                $book['quantity_order_number'] = $quantityOrderNumber;
+                Books::where('id', $bookId)->update($book);
+            }
+        }
         if($status < 2){
             $status+=1;
         }
