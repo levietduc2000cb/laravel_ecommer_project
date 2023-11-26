@@ -13,15 +13,12 @@ class Pagination extends Component
      *
      */
     public $pagination;
-    public $nameRoute;
     public $count;
-    public $search;
-    public function __construct($pagination, $nameRoute, $count, $search)
+    public function __construct($pagination, $count)
     {
         $this->pagination = $pagination;
-        $this->nameRoute = $nameRoute;
         $this->count = $count;
-        $this->search = $search;
+
     }
 
     /**

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->json('image')->nullable();
             $table->integer('quantity');
             $table->integer('quantity_order_number')->nullable();
+            $table->integer('star')->default(0);
             $table->timestamps();
         });
     }

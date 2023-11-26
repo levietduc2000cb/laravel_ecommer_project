@@ -13,14 +13,16 @@ class BookItem extends Component
      *
      */
 
+     public $id;
      public $img;
      public $name;
      public $author;
      public $stars;
      public $reviewers;
      public $price;
-    public function __construct($img,$name,$author,$stars,$reviewers,$price)
+    public function __construct($id,$img,$name,$author,$stars,$reviewers,$price)
     {
+        $this->id = $id;
         $this->img = $img;
         $this->name = $name;
         $this->author = $author;

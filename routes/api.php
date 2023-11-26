@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/send-email',[MailController::class,'index'])->name('send-email');
 Route::post('/send-email-join-us',[MailController::class,'sendEmailJoinUs'])->name('send-email-join-us');
+Route::post('/send-email-contact',[MailController::class,'sendEmailContact'])->name('send-email-contact');
 
 Route::prefix('/track-order')->group(function () {
     Route::post('/',[TrackOrderController::class, 'store'])->name('user_track-order_store');

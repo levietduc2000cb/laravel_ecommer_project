@@ -16,7 +16,8 @@ use App\Http\Controllers\{
     SupportController,
     TypesController,
     BlogsController,
-    AnalysticController
+    AnalysticController,
+    CategoryController
 };
 use App\Models\Users;
 
@@ -53,9 +54,7 @@ Route::group([],function () {
         //Home
         Route::get('/',[BooksController::class, 'userBooksHome'])->name("home");
         //Category
-        Route::get('/category',function () {
-            return view('user/category');
-        })->name("category");
+        Route::get('/category',[CategoryController::class,'indexUser'])->name("category");
         //About
         Route::get('/about',function () {
             return view('user/about');
@@ -63,6 +62,7 @@ Route::group([],function () {
         //Blog
         Route::get('/blog-detail/{id}',[BlogsController::class, 'useBlogDetail'])->name('blog_detail');
         Route::get('/blog',[BlogsController::class, 'userBlogs'])->name('blog');
+        Route::get('/blog/{id}',[BlogsController::class, 'userTypeBlogs'])->name('blog_types');
         //Contact
         Route::get('/contact',function(){
             return view('user/contact');

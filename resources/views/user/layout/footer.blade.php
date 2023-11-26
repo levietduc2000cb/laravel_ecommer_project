@@ -22,29 +22,29 @@
             <div class="font-bold text-[1.0625rem] text-blue_custom h-[3.75rem]">Book Category</div>
             <div class="grid grid-cols-2">
                 <ul class="flex flex-col gap-4 text-base text-blue_custom">
-                    <li class="cursor-pointer hover:underline">History</li>
-                    <li class="cursor-pointer hover:underline">Horror - Thriller</li>
-                    <li class="cursor-pointer hover:underline">Love Stories</li>
-                    <li class="cursor-pointer hover:underline">Science Fiction</li>
-                    <li class="cursor-pointer hover:underline">Business</li>
+                    <a href="" class="cursor-pointer hover:underline">Khoa học viễn tưởng</a>
+                    <a href="" class="cursor-pointer hover:underline">Khoa học viễn tưởng</a>
+                    <a href="" class="cursor-pointer hover:underline">Khoa học viễn tưởng</a>
+                    <a href="" class="cursor-pointer hover:underline">Khoa học viễn tưởng</a>
+                    <a href="" class="cursor-pointer hover:underline">Khoa học viễn tưởng</a>
                 </ul>
                 <ul class="flex flex-col gap-4 text-base text-blue_custom">
-                    <li class="cursor-pointer hover:underline">Biography</li>
-                    <li class="cursor-pointer hover:underline">Astrology</li>
-                    <li class="cursor-pointer hover:underline">Digital Marketing</li>
-                    <li class="cursor-pointer hover:underline">Software Development</li>
-                    <li class="cursor-pointer hover:underline">Ecommerce</li>
+                    <a href="" class="cursor-pointer hover:underline">Giáo dục</a>
+                    <a href="" class="cursor-pointer hover:underline">Giáo dục</a>
+                    <a href="" class="cursor-pointer hover:underline">Giáo dục</a>
+                    <a href="" class="cursor-pointer hover:underline">Giáo dục</a>
+                    <a href="" class="cursor-pointer hover:underline">Giáo dục</a>
                 </ul>
             </div>
         </div>
     <div>
         <div class="font-bold text-[1.0625rem] text-blue_custom h-[3.75rem]">Sirte Map</div>
         <ul class="flex flex-col gap-4 text-base text-blue_custom">
-            <li class="cursor-pointer hover:underline">Home</li>
-            <li class="cursor-pointer hover:underline">About Us</li>
-            <li class="cursor-pointer hover:underline">FAQs</li>
-            <li class="cursor-pointer hover:underline">Blog</li>
-            <li class="cursor-pointer hover:underline">Contact</li>
+            <a href="{{route('home')}}" class="cursor-pointer hover:underline">Home</a>
+            <a href="{{route('about')}}" class="cursor-pointer hover:underline">About Us</a>
+            <a href="{{route('user_faqs')}}" class="cursor-pointer hover:underline">FAQs</a>
+            <a href="{{route('blog')}}" class="cursor-pointer hover:underline">Blog</a>
+            <a href="{{route('contact')}}" class="cursor-pointer hover:underline">Contact</a>
         </ul>
     </div>
     </div>

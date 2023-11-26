@@ -29,16 +29,17 @@ Contact
     <div class="mt-16">
         <h2 class="text-[1.75rem] font-semibold font-playfair mb-5">Get in Touch</h2>
         <div class="flex flex-col-reverse w-full md:flex-row">
-            <form action="" class="w-full mt-6 md:mt-0 md:w-3/4 md:pr-24">
+            <form action="{{route('send-email-contact')}}" method="POST" class="w-full mt-6 md:mt-0 md:w-3/4 md:pr-24">
+                @csrf
                 <textarea class="w-full py-4 pl-[1.125rem] pr-3 text-sm border border-solid rounded border-gray_custom"
-                    name="" id="" cols="30" rows="10" placeholder="Enter Message"></textarea>
+                    name="message" id="" cols="30" rows="10" placeholder="Enter Message"></textarea>
                 <div class="flex w-full mt-8 gap-7">
-                    <input type="text" placeholder="Enter your name"
+                    <input type="text" placeholder="Enter your name" name="name"
                         class="border border-solid border-gray_custom w-full py-4 pl-[1.125rem] pr-3 text-sm rounded">
-                    <input type="emai" placeholder="Email"
+                    <input type="emai" placeholder="Email" name="email"
                         class="border border-solid border-gray_custom w-full py-4 pl-[1.125rem] pr-3 text-sm rounded">
                 </div>
-                <input type="text" placeholder="Enter Subject"
+                <input type="text" placeholder="Enter Subject" name="subject"
                     class="mt-8 border border-solid border-gray_custom w-full py-4 pl-[1.125rem] pr-3 text-sm rounded">
                 <button type="submit"
                     class="py-[1.125rem] border border-solid mt-11 px-11 border-red_custom text-red_custom hover:text-white hover:bg-red_custom cursor-pointer">Send</button>
@@ -69,5 +70,8 @@ Contact
         </div>
     </div>
 </div>
+@if(session('msg'))
+<x-toast type="infor" msg="{{session('msg')}}" />
+@endif
 
 @endsection

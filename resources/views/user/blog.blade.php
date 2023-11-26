@@ -56,7 +56,7 @@ Blog
         </li>
         @endforeach
         <div class="flex justify-center mt-5">
-            <x-pagination pagination={{$pagination}} name-route="admin_books" count={{$count}} search={{$search}}/>
+            <x-pagination pagination={{$pagination}} count={{$count}}/>
         </div>
     </ul>
 
@@ -69,77 +69,32 @@ Blog
             <h3 class="pb-10 text-xl border-b border-solid font-playfair border-gray_custom">Category</h3>
             @foreach($blogCategoryTotal as $index => $type)
                 <a class="block py-4 text-sm font-light border-b border-solid font-roboto border-gray_custom hover:text-red_custom"
-                    href="/">{{$type->name.'('.($type->count==null ? 0 : $type->count).')'}}
+                    href="{{route('blog_types',['id'=>$type->id])}}">{{$type->name.'('.($type->count==null ? 0 : $type->count).')'}}
                 </a>
             @endforeach
         </div>
         <ul class="bg-gray_custom_4 p-[1.875rem]">
             <h3 class="pb-10 text-xl border-b border-solid font-playfair border-gray_custom">Recent Post</h3>
-            <li class="grid grid-cols-[1fr,2fr] gap-x-5 py-4">
-                <div class="p-3"><img class="object-fill w-full aspect-square"
-                        src="https://preview.colorlib.com/theme/abcbook/assets/img/post/post_1.jpg" alt="img-post">
-                </div>
-                <div class="flex flex-col justify-center">
-                    <a href="" class="text-base font-semibold truncate hover:text-red_custom font-playfair">From life
-                        was you fish</a>
-                    <p class="text-sm text-gray_custom_2">January 12, 2019</p>
-                </div>
-            </li>
-            <li class="grid grid-cols-[1fr,2fr] gap-x-5 py-4">
-                <div class="p-3"><img class="object-fill w-full aspect-square"
-                        src="https://preview.colorlib.com/theme/abcbook/assets/img/post/post_1.jpg" alt="img-post">
-                </div>
-                <div class="flex flex-col justify-center">
-                    <a href="" class="text-base font-semibold truncate hover:text-red_custom font-playfair">From life
-                        was you fish</a>
-                    <p class="text-sm text-gray_custom_2">January 12, 2019</p>
-                </div>
-            </li>
-            <li class="grid grid-cols-[1fr,2fr] gap-x-5 py-4">
-                <div class="p-3"><img class="object-fill w-full aspect-square"
-                        src="https://preview.colorlib.com/theme/abcbook/assets/img/post/post_1.jpg" alt="img-post">
-                </div>
-                <div class="flex flex-col justify-center">
-                    <a href="" class="text-base font-semibold truncate hover:text-red_custom font-playfair">From life
-                        was you fish</a>
-                    <p class="text-sm text-gray_custom_2">January 12, 2019</p>
-                </div>
-            </li>
-            <li class="grid grid-cols-[1fr,2fr] gap-x-5 py-4">
-                <div class="p-3"><img class="object-fill w-full aspect-square"
-                        src="https://preview.colorlib.com/theme/abcbook/assets/img/post/post_1.jpg" alt="img-post">
-                </div>
-                <div class="flex flex-col justify-center">
-                    <a href="" class="text-base font-semibold truncate hover:text-red_custom font-playfair">From life
-                        was you fish</a>
-                    <p class="text-sm text-gray_custom_2">January 12, 2019</p>
-                </div>
-            </li>
+            @foreach($recentBlogs as $key => $recentBlog)
+                <li class="grid grid-cols-[1fr,2fr] gap-x-5 py-4">
+                    <div class="p-3"><img class="object-fill w-full aspect-square"
+                            src="{{asset('images/blogs/'.$recentBlog->image_title)}}" alt="img-post">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <a href="{{route('blog_detail',['id'=>$recentBlog->id])}}" class="text-base font-semibold truncate hover:text-red_custom font-playfair">{{$recentBlog->title}}</a>
+                        <p class="text-sm text-gray_custom_2">{{convertDateTime($recentBlog->created_at)}}</p>
+                    </div>
+                </li>
+            @endforeach
         </ul>
         <div class="bg-gray_custom_4 p-[1.875rem]">
             <h3 class="pb-10 text-xl border-b border-solid font-playfair border-gray_custom">Tag</h3>
             <div class="mt-4">
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Project</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Love</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Technology</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Travel</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Restaurant</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Life
-                    Style</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Design</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Illustration</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">Anime</a>
-                <a href="/"
-                    class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">News</a>
+                @foreach($tagCategory as $key => $tag)
+                <a href="{{route('blog_types',['id'=>$tag->id])}}"
+                class="capitalize font-roboto text-sm py-1 px-5 bg-white text-gray_custom_2 hover:text-white hover:bg-red_custom inline-block m-[0.3125rem]">{{$tag->name}}</a>
+                @endforeach
+
             </div>
         </div>
     </div>

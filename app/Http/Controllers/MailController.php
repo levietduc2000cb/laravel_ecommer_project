@@ -51,5 +51,17 @@ class MailController extends Controller
         Mail::to($email)->send(new MailNotify($data));
         return back()->with("msg","Send email success. Please check your email");
     }
+
+    function sendEmailContact(Request $request){
+        $email = $request->email;
+        $body = $request->message;
+        $subject = $request->subject;
+        $data = [
+            "title" => $subject,
+            "body" => $body,
+        ];
+        Mail::to($email)->send(new MailNotify($data));
+        return back()->with("msg","Send email success. Please check your email");
+    }
 }
 

@@ -35,7 +35,13 @@
         let optionCustoms = document.querySelectorAll("input[type='radio'][class='option_custom']");
         optionCustoms.forEach(option => {
         option.addEventListener("change",(e)=>{
-        document.querySelector(`#${e.currentTarget.name}`).textContent = e.currentTarget.nextElementSibling.textContent;
+            document.querySelector(`#${e.currentTarget.name}`).textContent = e.currentTarget.nextElementSibling.textContent;
+            //Get current url
+            let urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('pagination',1);
+            urlParams.set(e.currentTarget.getAttribute("name"),e.currentTarget.getAttribute("value"));
+            //Change url;
+            window.location.href = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
         })
     });
 })

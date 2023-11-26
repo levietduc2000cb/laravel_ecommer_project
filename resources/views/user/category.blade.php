@@ -56,42 +56,11 @@ $authorOptions = [
 $popularityOptions = [
 ["name"=>"name","value"=>"name","content"=>"Name"],
 ["name"=>"new","value"=>"new","content"=>"New"],
-["name"=>"old","value"=>"old","content"=>"Old"],
-["name"=>"price","value"=>"price","content"=>"Price"],
+["name"=>"old","value"=>"old","content"=>"Old"]
 ];
-
-$bookItems = [
-["img"=>"https://preview.colorlib.com/theme/abcbook/assets/img/gallery/best_selling1.jpg.webp"
-,"name"=>"Moon Dance"
-,"author"=>"J. R Rain"
-,"stars"=>"3"
-,"reviewers"=>"100"
-,"price"=>"100"],
-["img"=>"https://preview.colorlib.com/theme/abcbook/assets/img/gallery/best_selling1.jpg.webp"
-,"name"=>"Moon Dance"
-,"author"=>"J. R Rain"
-,"stars"=>"3"
-,"reviewers"=>"100"
-,"price"=>"100"],
-["img"=>"https://preview.colorlib.com/theme/abcbook/assets/img/gallery/best_selling1.jpg.webp"
-,"name"=>"Moon Dance"
-,"author"=>"J. R Rain"
-,"stars"=>"3"
-,"reviewers"=>"100"
-,"price"=>"100"],
-["img"=>"https://preview.colorlib.com/theme/abcbook/assets/img/gallery/best_selling1.jpg.webp"
-,"name"=>"Moon Dance"
-,"author"=>"J. R Rain"
-,"stars"=>"3"
-,"reviewers"=>"100"
-,"price"=>"100"],
-["img"=>"https://preview.colorlib.com/theme/abcbook/assets/img/gallery/best_selling1.jpg.webp"
-,"name"=>"Moon Dance"
-,"author"=>"J. R Rain"
-,"stars"=>"3"
-,"reviewers"=>"100"
-,"price"=>"100"],
-];
+$genresList = isset($genresList) ? explode(",", $genresList) : [];
+$publishersList = isset($publishersList) ? explode(",", $publishersList) : [];
+$authorsList = isset($authorsList) ? explode(",", $authorsList) : [];
 @endphp
 {{-- Title --}}
 <x-page-title-background img="https://preview.colorlib.com/theme/abcbook/assets/img/hero/h2_hero1.jpg.webp"
@@ -103,8 +72,8 @@ $bookItems = [
         <div class="hidden px-5 py-8 border border-solid border-gray_custom sm:block">
             <p class="text-lg font-semibold font-playfair mb-7">Filter by Genres</p>
             <ul class="flex flex-col gap-y-3 font-roboto">
-                @foreach($genresOptions as $genresOption)
-                <x-option-rounded-checkbox :name="$genresOption['name']" :id="$genresOption['id']" />
+                @foreach($types as $key=>$genresOption)
+                <x-option-rounded-checkbox :checkedOption="$genresList" :name="$genresOption['name']" :id="$genresOption['id']" :labelKeyName="'genre-'.$key" classCustom="genre"/>
                 @endforeach
             </ul>
             <p class="text-lg font-semibold font-playfair my-7">Filter by Price</p>
@@ -118,14 +87,14 @@ $bookItems = [
             </ul>
             <p class="text-lg font-semibold font-playfair my-7">Filter by Publisher</p>
             <ul class="flex flex-col gap-y-3 font-roboto">
-                @foreach($publisherOptions as $publisherOption)
-                <x-option-rounded-checkbox :name="$publisherOption['name']" :id="$publisherOption['id']" />
+                @foreach($publishers as $key=>$publisherOption)
+                <x-option-rounded-checkbox :checkedOption="$publishersList" :name="$publisherOption['publisher']" :id="$publisherOption['publisher']" :labelKeyName="'publisher-'.$key" classCustom="publisher"/>
                 @endforeach
             </ul>
             <p class="text-lg font-semibold font-playfair my-7">Filter by Author Name</p>
             <ul class="flex flex-col gap-y-3 font-roboto">
-                @foreach($authorOptions as $authorOption)
-                <x-option-rounded-checkbox :name="$authorOption['name']" :id="$authorOption['id']" />
+                @foreach($authors as $key=>$authorOption)
+                <x-option-rounded-checkbox :checkedOption="$authorsList" :name="$authorOption['author']" :id="$authorOption['author']" :labelKeyName="'author-'.$key" classCustom="author"/>
                 @endforeach
             </ul>
         </div>
@@ -137,12 +106,22 @@ $bookItems = [
                         :options="$popularityOptions" />
                 </div>
             </div>
-            <div class="grid w-full grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:grid-cols-4 md:grid-cols-3 mt-7">
-                @foreach($bookItems as $bookItem)
-                <x-book-item :img="$bookItem['img']" :name="$bookItem['name']" :author="$bookItem['author']"
-                    :stars="$bookItem['stars']" :reviewers="$bookItem['reviewers']" :price="$bookItem['price']" />
-                @endforeach
-            </div>
+            @if(isset($books) && count($books)>0)
+                <div class="grid w-full grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:grid-cols-4 md:grid-cols-3 mt-7">
+                    @foreach($books as $bookItem)
+                    <x-book-item :id="$bookItem['id']" :img="asset('images/books/'.$bookItem['image'][0]) ? asset('images/books/'.$bookItem['image'][0]) : asset('images/books/no-image.jpg')" :name="$bookItem['name']" :author="$bookItem['author']"
+                        :stars="$bookItem['star']" :reviewers="100" :price="$bookItem['price']" />
+                    @endforeach
+                </div>
+            @else
+                <div class="mt-10 text-center">There are no books that satisfy the filter criteria</div>
+            @endif
+            {{-- Pagination custome 2 --}}
+            @if(isset($books) && count($books)>0)
+                <div class="flex justify-center mt-5">
+                    <x-pagination pagination={{$pagination}} count={{$count}}/>
+                </div>
+            @endif
         </div>
     </div>
 </div>

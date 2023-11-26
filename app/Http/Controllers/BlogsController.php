@@ -66,16 +66,60 @@ class BlogsController extends Controller
         $blogs = $blogs->join('blogtypes','blogs.blog_type_id','=','blogtypes.id')->select('blogs.*', 'blogtypes.name as nameType')->get();
         $types = BlogTypes::get();
 
+        $recentBlogs = Blogs::orderBy('created_at')->limit(4)->get();
+
         $sqlBlogCategoryTotal = "SELECT blogtypes.*, totalBlogsType.count
         FROM blogtypes
         LEFT JOIN (SELECT blog_type_id, COUNT(*) AS count FROM blogs GROUP BY blog_type_id) AS totalBlogsType
         ON blogtypes.id = totalBlogsType.blog_type_id;";
         $blogCategoryTotal = DB::select(DB::raw($sqlBlogCategoryTotal));
 
+        $tagCategory =  BlogTypes::inRandomOrder()->limit(10)->get();
+
         $res['blogs'] = $blogs;
+        $res['recentBlogs'] = $recentBlogs;
         $res['types'] = $types;
         $res['count'] =(int)$count;
-        return view('user/blog', $res,['blogCategoryTotal'=>$blogCategoryTotal]);
+        return view('user/blog', $res,['blogCategoryTotal'=>$blogCategoryTotal,'tagCategory'=>$tagCategory]);
+    }
+
+    public function userTypeBlogs($id, Request $request){
+        $res = [];
+        $skip = 0;
+        $take = 10;
+        $count = 0;
+        $blogs = new Blogs;
+        //Check has query pagination
+        if($request->has('pagination')){
+            $skip = (int)($request->query('pagination')-1) * $take;
+            $res['pagination'] = (int)($request->query('pagination'));
+        }
+        if($id){
+            $blogs= $blogs->where('blog_type_id',$id);
+            $count =  ceil($blogs->count()/ $take);
+        }
+        else{
+            //Get count in total
+            $count =  ceil(Blogs::count() / $take);
+        }
+        //Get data from table book and skip 10 item
+        $blogs = $blogs->skip($skip)->take($take);
+        $blogs = $blogs->join('blogtypes','blogs.blog_type_id','=','blogtypes.id')->select('blogs.*', 'blogtypes.name as nameType')->get();
+        $types = BlogTypes::get();
+        $recentBlogs = Blogs::orderBy('created_at')->limit(4)->get();
+
+        $sqlBlogCategoryTotal = "SELECT blogtypes.*, totalBlogsType.count
+        FROM blogtypes
+        LEFT JOIN (SELECT blog_type_id, COUNT(*) AS count FROM blogs GROUP BY blog_type_id) AS totalBlogsType
+        ON blogtypes.id = totalBlogsType.blog_type_id;";
+        $blogCategoryTotal = DB::select(DB::raw($sqlBlogCategoryTotal));
+        $tagCategory =  BlogTypes::inRandomOrder()->limit(10)->get();
+
+        $res['blogs'] = $blogs;
+        $res['recentBlogs'] = $recentBlogs;
+        $res['types'] = $types;
+        $res['count'] =(int)$count;
+        return view('user/blog', $res,['blogCategoryTotal'=>$blogCategoryTotal,'tagCategory'=>$tagCategory]);
     }
     function useBlogDetail($id){
         $blog = Blogs::where('id',$id)->first();

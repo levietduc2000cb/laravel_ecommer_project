@@ -6,7 +6,7 @@
             class="flex flex-col lg:flex-row items-center gap-0 lg:gap-11 py-[1.15rem] font-semibold text-xl md:text-base w-full lg:w-auto">
             <li class="w-full lg:w-auto"><a href="{{route('home')}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Home</a></li>
-            <li class="w-full lg:w-auto"><a href="{{route('category')}}"
+            <li class="w-full lg:w-auto"><a href="{{route('category',["pagination"=>1])}}"
                     class="block w-full py-3 text-center lg:w-auto lg:py-0 hover:text-red_custom">Categories</a></li>
             @if(auth()->check())
             <li class="block w-full lg:w-auto lg:hidden"><a href="{{route('user_cart')}}"

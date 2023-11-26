@@ -13,10 +13,17 @@ class OptionRoundedCheckbox extends Component
      */
     public $id;
     public $name;
-    public function __construct($id,$name)
+    public $classCustom;
+    public $labelKeyName;
+    public $checkedOption;
+    public function __construct($id,$name,$classCustom='',$labelKeyName='',$checkedOption=[])
     {
         $this->id = $id;
         $this->name = $name;
+        $this->classCustom = $classCustom;
+        $this->labelKeyName = $labelKeyName;
+        $this->checkedOption = $checkedOption;
+
     }
 
     /**

@@ -238,7 +238,7 @@ Books
         </tbody>
     </table>
     <div class="flex justify-center mt-5">
-        <x-pagination pagination={{$pagination}} name-route="admin_books" count={{$count}} search={{$search}}/>
+        <x-pagination pagination={{$pagination}} count={{$count}}/>
     </div>
 </main>
 {{-- Modal Delete --}}
