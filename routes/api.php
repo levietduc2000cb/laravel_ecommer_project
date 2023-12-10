@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\{MailController, TrackOrderController};
+use App\Http\Controllers\{MailController, TrackOrderController, CommentController};
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,4 +24,8 @@ Route::post('/send-email-contact',[MailController::class,'sendEmailContact'])->n
 
 Route::prefix('/track-order')->group(function () {
     Route::post('/',[TrackOrderController::class, 'store'])->name('user_track-order_store');
+});
+
+Route::prefix('/comments')->group(function () {
+    Route::get('/',[CommentController::class, 'show'])->name('get-comments');
 });

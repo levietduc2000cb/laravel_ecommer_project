@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Users;
+use App\Models\{Users, Orders};
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\{Hash,Auth};
 
@@ -14,7 +14,8 @@ class ProfileController extends Controller
     {
         $id = Auth::user()->id;
         $res = Users::where('id', $id)->get();
-        return view('user/profile',['user'=>$res]);
+        $order = Orders::where('customerId', $id)->orderBy('created_at','desc')->take(10)->get();
+        return view('user/profile',['user'=>$res,'orders'=>$order]);
     }
 
     public function update(Request $request, $id)

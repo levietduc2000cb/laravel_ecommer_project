@@ -309,80 +309,67 @@ Book
                 </div>
             </li>
             <li style="display: none" class="menu_sub_content">
-                <form action="" method="post" class="p-6 border border-solid rounded border-gray_custom_2">
+                <form action="{{route('customer-comment')}}" method="post" class="p-6 border border-solid rounded border-gray_custom_2">
                     <div class="flex items-center">
                         <label for="product_quality" class="mr-5 font-medium">Product quality</label>
                         <div class="flex items-center text-sm">
                             <div class="relative flex flex-row-reverse items-center gap-1">
-                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star"></i>
-                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star"></i>
-                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star"></i>
-                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star"></i>
-                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star"></i>
-                                <span class="review_star_content"></span>
+                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star" onclick="handleStarRating(5)"></i>
+                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star" onclick="handleStarRating(4)"></i>
+                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star" onclick="handleStarRating(3)"></i>
+                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star" onclick="handleStarRating(2)"></i>
+                                <i class="cursor-pointer fa-solid fa-star text-gray_custom_2 review_star" onclick="handleStarRating(1)"></i>
+                                <span class="review_star_content" id="review_star_content"></span>
                             </div>
                         </div>
                     </div>
-                    <label for="review" class="font-medium">Review</label>
-                    <textarea id="review" class="w-full p-4 border border-solid rounded-md border-gray_custom_2"
-                        id="comment" cols="30" rows="5" name="comment" placeholder="Your comment"></textarea>
-                    <div class="flex justify-end"><button
-                            class="px-6 py-3 font-bold text-white bg-light_yellow_custom">Review</button></div>
+                    @csrf
+                    <label for="evaluate_stars"><input type="text" id="evaluate_stars" name="evaluate_stars" placeholder="" hidden></label>
+                    <label for="customer_id"><input type="text" id="customer_id" name="customer_id" placeholder="" value="{{(auth()->check()) ? auth()->id() : ''}}" hidden></label>
+                    <label for="customer_id"><input type="text" id="book_id" name="book_id" placeholder="" value="{{($book->id) ? $book->id : ''}}" hidden></label>
+                    <label for="comment" class="font-medium">Review</label>
+                    <textarea name="comment" id="comment" class="w-full p-4 border border-solid rounded-md border-gray_custom_2" id="comment" cols="30" rows="5" name="comment" placeholder="Your comment"></textarea>
+                    <div class="flex justify-end">
+                        @if (auth()->check())
+                            <button id="btn_review" type="submit" class="px-6 py-3 font-bold text-white bg-light_yellow_custom">
+                                Review
+                            </button>
+                        @else
+                            <button id="btn_review" type="button"  class="px-6 py-3 font-bold text-white bg-light_yellow_custom">
+                                Review
+                            </button>
+                        @endif
+
+                    </div>
                 </form>
                 <ul class="flex flex-col gap-5 mt-5">
-                    <li class="flex gap-x-3 md:gap-x-16">
-                        <div>
-                            <img src="https://th.bing.com/th/id/R.1f7dd3a0cf21c1d5b9f345354dce07de?rik=wTsgXpmOyKVQkg&pid=ImgRaw&r=0"
-                                alt="avatar" class="w-20 rounded-full aspect-square">
-                            <h3 class="text-lg font-bold text-center">Nam</h3>
-                            <p class="text-base font-light text-center">08/09/2020</p>
-                        </div>
-                        <div>
-                            <div class="text-sm">
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-gray_custom_2"></i>
-                            </div>
-                            <p>Một cuốn sách rất bổ ích và không thể thiếu được nếu bạn có ý định học Tarot. Khi bắt đầu
-                                học tarot, có thể bạn sẽ bị bối rối vì không biết bắt đầu từ đâu, cũng như là vì một bộ
-                                có đến 78 lá bài. Cuốn sách này sẽ giúp bạn giải quyết vấn đề đó. Tuy sách có hơi dài và
-                                đôi khi bị hơi nhàm chán, nhưng nếu chịu khó tìm hiểu và đọc thì sẽ thấy nó rất thú vị!
-                                Còn nếu như bạn vẫn thấy nó quá dài, thì bạn nên giở trang mục lục và tìm xem chủ đề nào
-                                làm bạn hứng thú nhất, rồi tìm hiểu về chủ đề đó, thì mới kích thích được trí tò mò mà
-                                không bị nản. Tarot là một thế giới muôn hình vạn trạng, vô cùng nhiều kiến thức và nếu
-                                như không chịu khó tìm hiểu thì dễ bị nản chí. Hãy cố lên bạn nhé!</p>
-                        </div>
+                    <div id="comments" class="flex flex-col gap-4">
+                        @foreach($comments as $key => $comment)
+                            <li class="flex gap-x-3 md:gap-x-16">
+                                <div>
+                                    <img src="https://th.bing.com/th/id/R.1f7dd3a0cf21c1d5b9f345354dce07de?rik=wTsgXpmOyKVQkg&pid=ImgRaw&r=0"
+                                        alt="avatar" class="w-20 rounded-full aspect-square">
+                                    <h3 class="text-lg font-bold text-center">{{$comment->fullName}}</h3>
+                                    <p class="text-base font-light text-center">{{(new DateTime($comment->created_at))->format("d/m/Y")}}</p>
+                                </div>
+                                <div>
+                                    <div class="text-sm">
+                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                        <i class="fa-solid fa-star text-gray_custom_2"></i>
+                                    </div>
+                                    <p>{{$comment->comment}}</p>
+                                </div>
+                            </li>
+                        @endforeach
+                    </div>
+                    <li class="flex justify-center">
+                        <button id="see-more-btn" class="flex items-center justify-center h-10 px-6 border border-solid rounded-full cursor-pointer hover:text-white hover:bg-red_custom text-red_custom border-red_custom">
+                            See More
+                        </butt>
                     </li>
-                    <li class="flex gap-x-3 md:gap-x-16 ">
-                        <div>
-                            <img src="https://th.bing.com/th/id/R.1f7dd3a0cf21c1d5b9f345354dce07de?rik=wTsgXpmOyKVQkg&pid=ImgRaw&r=0"
-                                alt="avatar" class="w-20 rounded-full aspect-square">
-                            <h3 class="text-lg font-bold text-center">Nam</h3>
-                            <p class="text-base font-light text-center">08/09/2020</p>
-                        </div>
-                        <div>
-                            <div class="text-sm">
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                <i class="fa-solid fa-star text-gray_custom_2"></i>
-                            </div>
-                            <p>Một cuốn sách rất bổ ích và không thể thiếu được nếu bạn có ý định học Tarot. Khi bắt đầu
-                                học tarot, có thể bạn sẽ bị bối rối vì không biết bắt đầu từ đâu, cũng như là vì một bộ
-                                có đến 78 lá bài. Cuốn sách này sẽ giúp bạn giải quyết vấn đề đó. Tuy sách có hơi dài và
-                                đôi khi bị hơi nhàm chán, nhưng nếu chịu khó tìm hiểu và đọc thì sẽ thấy nó rất thú vị!
-                                Còn nếu như bạn vẫn thấy nó quá dài, thì bạn nên giở trang mục lục và tìm xem chủ đề nào
-                                làm bạn hứng thú nhất, rồi tìm hiểu về chủ đề đó, thì mới kích thích được trí tò mò mà
-                                không bị nản. Tarot là một thế giới muôn hình vạn trạng, vô cùng nhiều kiến thức và nếu
-                                như không chịu khó tìm hiểu thì dễ bị nản chí. Hãy cố lên bạn nhé!</p>
-                        </div>
-                    </li>
-                    <li class="flex justify-center"><a href="/"
-                            class="flex items-center justify-center h-10 px-6 border border-solid rounded-full cursor-pointer menu_sub hover:text-white hover:bg-red_custom text-red_custom border-red_custom">See
-                            More</a></li>
                 </ul>
             </li>
         </ul>
@@ -453,6 +440,17 @@ Book
         quantityId.value = Number(quantityId.value) + 1;
     }
 
+    function handleStarRating(index){
+        let reviewStars = document.querySelectorAll(".review_star");
+        let reviewStarContent = document.querySelector("#review_star_content");
+        let evaluateStars = document.querySelector("#evaluate_stars");
+        reviewStars.forEach(star=>star.style = '');
+        for (let i = 1; i <= index; i++) {
+            reviewStars[5 - i].style.color ="#faba00";
+        }
+        evaluateStars.value = index+"";
+    }
+
     //Handle Menu Des of Book
     document.addEventListener('DOMContentLoaded', function() {
         let menuSubs = document.querySelectorAll(".menu_sub");
@@ -477,6 +475,11 @@ Book
 <script>
     let btnAddCart = document.getElementById("btn_add_cart");
     let btnBuyNow = document.getElementById("btn_buy_now");
+    let btnReview  = document.getElementById("btn_review");
+    let comments = document.getElementById("comments");
+    let seeMoreBtn = document.querySelector("#see-more-btn");
+    let commentsPagination = 1;
+
     const CART_NAME = @json(env('PRODUCTS_CART'));
     let book = @json($book);
     //Handle add product into cart
@@ -540,5 +543,81 @@ Book
         localStorage.setItem(CART_NAME, JSON.stringify(cart));
         window.location.href = @json(route('user_cart'));
     })
+
+    btnReview.addEventListener("click",()=>{
+        if(checkUserLogin()){
+            return;
+        };
+    })
+
+    //Format date to dd/mm/yyyy string
+    function formatDateToString(date){
+        const stringDate =  new Date(date);
+        let day = stringDate.getDate();
+        let month = stringDate.getMonth() + 1; // Tháng trong JavaScript tính từ 0-11, nên cần cộng thêm 1
+        let year = stringDate.getFullYear();
+
+        // Đảm bảo định dạng dd/mm/yyyy
+        if (day < 10) {
+        day = "0" + day;
+        }
+        if (month < 10) {
+        month = "0" + month;
+        }
+
+        return day + "/" + month + "/" + year;
+    }
+
+    //Get all comments of this book
+    let urlComment = @json(route('get-comments'));
+    let book_id = '<?php echo($book->id);?>';
+    function getComments(pagination){
+        fetch(`${urlComment}?pagination=${pagination}&book_id=${book_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Get comments is failure');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data.comments.length > 0){
+                    data.comments.forEach((comment)=>{
+                        comments.insertAdjacentHTML('beforeend',`
+                        <li class="flex gap-x-3 md:gap-x-16 ">
+                            <div>
+                                <img src="https://th.bing.com/th/id/R.1f7dd3a0cf21c1d5b9f345354dce07de?rik=wTsgXpmOyKVQkg&pid=ImgRaw&r=0"
+                                    alt="avatar" class="w-20 rounded-full aspect-square">
+                                <h3 class="text-lg font-bold text-center">${comment.fullName}</h3>
+                                <p class="text-base font-light text-center">${formatDateToString(comment.created_at)}</p>
+                            </div>
+                            <div>
+                                <div class="text-sm">
+                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
+                                    <i class="fa-solid fa-star text-gray_custom_2"></i>
+                                </div>
+                                <p>${comment.comment}</p>
+                            </div>
+                        </li>
+                        `)
+                    })
+                }else{
+                    return;
+                }
+            })
+            .catch(error => {
+                alert("Get comments is failure")
+            }).finally(()=>{
+
+            })
+    }
+    seeMoreBtn.addEventListener("click",(e)=>{
+        e.stopPropagation();
+        getComments(commentsPagination);
+        commentsPagination+=1;
+    })
+
 </script>
 @endPushOnce

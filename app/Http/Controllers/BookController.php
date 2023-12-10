@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 use App\Models\Books;
@@ -11,10 +12,14 @@ class BookController extends Controller
     public function index($id)
     {
         $res = [];
+
         $book = Books::where('id', $id)->get();
         $relatedBooks = Books::inRandomOrder()->where('id', '!=', $id)->where('type', $book[0]->type)->take(6)->get();
+        $comments = Comment::join('users','users.id','=','comments_book.customer_id')->select('comments_book.*', 'users.fullName as fullName','users.avatarUrl as avatarUrl')->orderBy('comments_book.created_at', 'desc')->skip(0)->take(8)->get();
+
         $res["book"] = $book[0];
         $res["relatedBooks"] = $relatedBooks;
+        $res['comments'] = $comments;
         return view('user/book',$res);
     }
 

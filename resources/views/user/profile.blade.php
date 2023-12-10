@@ -17,7 +17,7 @@ Profile
 @section('content')
 @php
 if(isset($user[0]->address)){
-$address = explode(",", $user[0]->address);
+    $address = explode(",", $user[0]->address);
 }
 @endphp
 {{-- Title --}}
@@ -71,57 +71,32 @@ $address = explode(",", $user[0]->address);
                 <h3 class="text-lg font-semibold">My bills</h3>
                 <span class="w-3 rounded-full aspect-square bg-blue_custom"></span>
             </div>
-            <ul class="flex flex-col gap-4 max-h-[250px] overflow-y-scroll no-scrollbar">
-                <li class="flex items-center justify-between py-2 gap-x-3">
-                    <div>
-                        <div class="text-base font-semibold">Bill #123</div>
-                        <div class="text-sm text-gray_custom_2">6th November 2020</div>
-                    </div>
-                    <div class="flex items-center h-full">
-                        <span class="py-1 text-white rounded-full w-[128px] text-center"
-                            style="background: linear-gradient(to right, red,blue )">Shipped</span>
-                    </div>
-                </li>
-                <li class="flex items-center justify-between py-2 gap-x-3">
-                    <div>
-                        <div class="text-base font-semibold">Bill #123</div>
-                        <div class="text-sm text-gray_custom_2">6th November 2020</div>
-                    </div>
-                    <div class="flex items-center h-full">
-                        <span class="py-1 text-white rounded-full w-[128px] text-center"
-                            style="background: linear-gradient(to right,red,red )">Placed</span>
-                    </div>
-                </li>
-                <li class="flex items-center justify-between py-2 gap-x-3">
-                    <div>
-                        <div class="text-base font-semibold">Bill #123</div>
-                        <div class="text-sm text-gray_custom_2">6th November 2020</div>
-                    </div>
-                    <div class="flex items-center h-full">
-                        <span class="py-1 text-white rounded-full w-[128px] text-center"
-                            style="background: linear-gradient(to right, blue,blue )">Delivered</span>
-                    </div>
-                </li>
-                <li class="flex items-center justify-between py-2 gap-x-3">
-                    <div>
-                        <div class="text-base font-semibold">Bill #123</div>
-                        <div class="text-sm text-gray_custom_2">6th November 2020</div>
-                    </div>
-                    <div class="flex items-center h-full">
-                        <span class="py-1 text-white rounded-full w-[128px] text-center"
-                            style="background: linear-gradient(to right, blue,blue )">Delivered</span>
-                    </div>
-                </li>
-                <li class="flex items-center justify-between py-2 gap-x-3">
-                    <div>
-                        <div class="text-base font-semibold">Bill #123</div>
-                        <div class="text-sm text-gray_custom_2">6th November 2020</div>
-                    </div>
-                    <div class="flex items-center h-full">
-                        <span class="py-1 text-white rounded-full w-[128px] text-center"
-                            style="background: linear-gradient(to right, blue,blue )">Delivered</span>
-                    </div>
-                </li>
+            <ul class="flex flex-col gap-4 max-h-[250px] overflow-y-scroll no-scrollbar" id="my_orders">
+                <div id="list_orders" class="flex flex-col gap-4">
+                    @if ($orders && count($orders)>0)
+                        @foreach($orders as $key => $order)
+                            <li class="flex items-center justify-between py-2 gap-x-3">
+                                <div>
+                                    <div class="text-base font-semibold">Bill #{{$order->id}}</div>
+                                    <div class="text-sm text-gray_custom_2">{{$order->created_at}}</div>
+                                </div>
+                                <div class="flex items-center h-full">
+                                    @if ($order->status == 0)
+                                        <span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right,red,red )">Placed</span>
+                                    @elseif($order->status == 1)
+                                        <span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right, red,blue)">Shipped</span>
+                                    @else
+                                        <span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right, blue,blue )">Delivered</span>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
+                    @else
+                    @endif
+                </div>
+                <div id="loading" class="text-center">
+                    Loading...
+                </div>
             </ul>
         </div>
         <div class="p-8 rounded-lg shadow-xl">
@@ -185,3 +160,18 @@ $address = explode(",", $user[0]->address);
 </script>
 @endpush
 @endonce
+
+@pushOnce('scripts_footer')
+    <script>
+
+        let myOrders = document.getElementById("my_orders");
+        myOrders.addEventListener("scroll", function(event) {
+            const {scrollHeight, scrollTop, clientHeight} = event.target;
+
+            if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
+                console.log('scrolled');
+            }
+        })
+
+    </script>
+@endPushOnce

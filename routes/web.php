@@ -13,11 +13,11 @@ use App\Http\Controllers\{
     UsersController,
     SettingController,
     OrdersController,
-    SupportController,
     TypesController,
     BlogsController,
     AnalysticController,
-    CategoryController
+    CategoryController,
+    CommentController
 };
 use App\Models\Users;
 
@@ -100,6 +100,11 @@ Route::group(['middleware'=>['auth','user-access:0']],function () {
     Route::get('/bill-detail/{id}', function(){
         return view('user/bill_detail');
     })->name("bill-detail");
+
+    //Tạo comment
+    Route::prefix('/comment')->group(function () {
+        Route::post('/',[CommentController::class, 'store'])->name('customer-comment');
+    });
 });
 
 
