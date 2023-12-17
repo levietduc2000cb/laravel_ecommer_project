@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\{MailController, TrackOrderController, CommentController};
+use App\Http\Controllers\{MailController, TrackOrderController, CommentController, TypesController};
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,4 +28,8 @@ Route::prefix('/track-order')->group(function () {
 
 Route::prefix('/comments')->group(function () {
     Route::get('/',[CommentController::class, 'show'])->name('get-comments');
+});
+
+Route::prefix('/types')->group(function () {
+    Route::get('/',[TypesController::class, 'show_api'])->name('get-types-api');
 });

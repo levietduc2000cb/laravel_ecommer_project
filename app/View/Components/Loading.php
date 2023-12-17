@@ -11,9 +11,10 @@ class Loading extends Component
      *
      * @return void
      */
-    public function __construct()
+    public $backColor;
+    public function __construct($backColor=null)
     {
-        //
+        $this->backColor = $backColor;
     }
 
     /**

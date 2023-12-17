@@ -22,4 +22,19 @@ class TypesController extends Controller
     {
         // Logic for deleting a book
     }
+
+    public function show_api(Request $request){
+
+        $query = $request->query();
+        $limit = $request->query('limit');
+        $skip = $request->query('skip');
+        if($limit && $skip){
+            $types =  Types::orderBy('created_at', 'desc')->skip($skip)->take($limit)->get();
+        }
+        else{
+            $types = Types::get();
+        }
+
+        return response()->json(['types' => $types]);
+    }
 }

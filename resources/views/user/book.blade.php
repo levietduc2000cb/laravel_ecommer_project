@@ -366,9 +366,12 @@ Book
                         @endforeach
                     </div>
                     <li class="flex justify-center">
-                        <button id="see-more-btn" class="flex items-center justify-center h-10 px-6 border border-solid rounded-full cursor-pointer hover:text-white hover:bg-red_custom text-red_custom border-red_custom">
+                        <button id="see-more-btn" style="display: flex" class="items-center justify-center h-10 px-6 border border-solid rounded-full cursor-pointer hover:text-white hover:bg-red_custom text-red_custom border-red_custom">
                             See More
                         </butt>
+                    </li>
+                    <li id="loading_more_comments" class="justify-center" style="display: none">
+                        <x-loading backColor="#F6081C"/>
                     </li>
                 </ul>
             </li>
@@ -478,6 +481,7 @@ Book
     let btnReview  = document.getElementById("btn_review");
     let comments = document.getElementById("comments");
     let seeMoreBtn = document.querySelector("#see-more-btn");
+    let loadingMoreComments = document.querySelector("#loading_more_comments");
     let commentsPagination = 1;
 
     const CART_NAME = @json(env('PRODUCTS_CART'));
@@ -604,19 +608,27 @@ Book
                         `)
                     })
                 }else{
-                    return;
+                    return false;
                 }
             })
             .catch(error => {
                 alert("Get comments is failure")
+                return false;
             }).finally(()=>{
 
             })
     }
     seeMoreBtn.addEventListener("click",(e)=>{
         e.stopPropagation();
-        getComments(commentsPagination);
-        commentsPagination+=1;
+        seeMoreBtn.style.display = 'none';
+        loadingMoreComments.style.display = 'flex';
+        let commentsStatus = getComments(commentsPagination);
+        if(commentsPagination !== false){
+            commentsPagination+=1;
+        }
+        seeMoreBtn.style.display = 'flex';
+        loadingMoreComments.style.display = 'none';
+
     })
 
 </script>
