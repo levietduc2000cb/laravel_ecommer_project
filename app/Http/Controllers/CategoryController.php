@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\{Books,Types};
+use App\Models\Comment;
 use DB;
 use Illuminate\Http\Request;
 
@@ -78,6 +79,11 @@ class CategoryController extends Controller
         $count =  ceil($books->count()/ $take);
 
         $books = $books->skip($skip)->take($take)->get();
+        foreach ($books as $key => $book) {
+            error_log($book->id);
+            $totalComment = Comment::where('book_id', $book->id)->count();
+            $book->totalComment = $totalComment;
+        }
         $types = Types::take($take)->get();
         $publishers = Books::select('publisher')->take($take)->groupBy('publisher')->get();
         $authors = Books::select('author')->take($take)->groupBy('author')->get();

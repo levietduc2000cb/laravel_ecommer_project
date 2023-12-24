@@ -38,4 +38,17 @@ function handleStatusOrder($status){
     }
 }
 
+function renderStars($totalStars){
+    $htmlStars = '';
+    for ($i=0; $i < 5; $i++) {
+        if($i < $totalStars){
+            $htmlStars = $htmlStars.'<i class="fa-solid fa-star text-light_yellow_custom"></i>';
+        }
+        else{
+            $htmlStars = $htmlStars.'<i class="fa-solid fa-star text-gray_custom_2"></i>';
+        }
+    }
+    return $htmlStars;
+}
+
 ?>

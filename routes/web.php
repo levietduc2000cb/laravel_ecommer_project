@@ -46,8 +46,8 @@ Route::prefix('/logout')->group(function () {
 });
 
 //Handle search bar action
-Route::get('books/search-name',[BooksController::class, 'searchName'])->name('admin_books_search');
-Route::get('blogs/search-name',[BlogsController::class, 'searchName'])->name('admin_blogs_search');
+Route::get('books/search-name',[BooksController::class, 'searchName'])->name('books_search');
+Route::get('blogs/search-name',[BlogsController::class, 'searchName'])->name('blogs_search');
 
 Route::group([],function () {
     Route::prefix('/')->group(function () {

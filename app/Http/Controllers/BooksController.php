@@ -146,10 +146,15 @@ class BooksController extends Controller
     }
     public function searchName(Request $request){
         if($request->has('search')){
-            $books = Books::where('name','like','%'.$request->query('search').'%')->take(10)->get('name');
-            return response()->json($books,200);
+            try {
+                $books = Books::where('name','like','%'.$request->query('search').'%')->take(10)->get('name');
+                return response()->json($books,200);
+            } catch (\Throwable $th) {
+                return response()->json($th,500);
+            }
+
         }
-        return response()->json(null,200);
+        return response()->json([],400);
 
     }
 

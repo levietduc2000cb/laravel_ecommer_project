@@ -110,7 +110,7 @@ $authorsList = isset($authorsList) ? explode(",", $authorsList) : [];
                 <div class="grid w-full grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:grid-cols-4 md:grid-cols-3 mt-7">
                     @foreach($books as $bookItem)
                     <x-book-item :id="$bookItem['id']" :img="asset('images/books/'.$bookItem['image'][0]) ? asset('images/books/'.$bookItem['image'][0]) : asset('images/books/no-image.jpg')" :name="$bookItem['name']" :author="$bookItem['author']"
-                        :stars="$bookItem['star']" :reviewers="100" :price="$bookItem['price']" />
+                        :stars="$bookItem['star']" :reviewers="$bookItem['totalComment']" price="{{calculatorPrice($bookItem['price'], $bookItem['sale'])}}" />
                     @endforeach
                 </div>
             @else

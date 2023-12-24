@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Books;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,13 @@ class CommentController extends Controller
         $data['book_id'] = $request->book_id;
         $data['comment'] = $request->comment;
         $data['evaluate_stars'] = $request->evaluate_stars;
+
+        $totalStars = Comment::where('book_id',$request->book_id)->sum('evaluate_stars');
+        $totalComments = Comment::where('book_id', $request->book_id)->count();
+        $stars = $totalStars / $totalComments;
+        $record = Books::findOrFail($request->book_id);
+        $record->star = $stars;
+        $record->save();
 
         $res = Comment::create($data);
         if($res){

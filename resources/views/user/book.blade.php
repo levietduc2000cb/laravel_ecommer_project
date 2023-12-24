@@ -354,11 +354,7 @@ Book
                                 </div>
                                 <div>
                                     <div class="text-sm">
-                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                        <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                        <i class="fa-solid fa-star text-gray_custom_2"></i>
+                                        {!! renderStars($comment->evaluate_stars) !!}
                                     </div>
                                     <p>{{$comment->comment}}</p>
                                 </div>
@@ -572,6 +568,21 @@ Book
         return day + "/" + month + "/" + year;
     }
 
+    //Handle render stars
+    function renderStars(totalStars){
+        let htmlStars = "";
+        for (let index = 0; index < 5; index++) {
+            if(index<totalStars){
+                htmlStars+='<i class="fa-solid fa-star text-light_yellow_custom"></i>';
+            }
+            else{
+                htmlStars+='<i class="fa-solid fa-star text-gray_custom_2"></i>'
+            }
+
+        }
+        return htmlStars;
+    }
+
     //Get all comments of this book
     let urlComment = @json(route('get-comments'));
     let book_id = '<?php echo($book->id);?>';
@@ -596,11 +607,7 @@ Book
                             </div>
                             <div>
                                 <div class="text-sm">
-                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                    <i class="fa-solid fa-star text-light_yellow_custom"></i>
-                                    <i class="fa-solid fa-star text-gray_custom_2"></i>
+                                    ${renderStars(comment.evaluate_stars)}
                                 </div>
                                 <p>${comment.comment}</p>
                             </div>

@@ -13,9 +13,15 @@
             </div>
             <div
                 class="mt-5 sm:mt-0 lg:mt-0 py-[0.7rem] px-5 border border-solid border-[#DEE0E6] rounded-3xl max-w-[640px] w-full flex flex-1 bg-white">
-                <input class="flex-1 h-full border-0 outline-none" type="text" name="search" placeholder="Search book">
-                <span class="cursor-pointer"><i
-                        class="scale-110 fa-solid fa-magnifying-glass text-red_custom"></i></span>
+                <div class="relative flex-1 h-full">
+                    <input value="{{isset($search) ? $search : ''}}" id="book-search-name" oninput="handleSearchListBooks(event)" onblur="closeSearchListBooks()" onkeyup="handleKeyEnter(event)" class="w-full border-0 outline-none" type="text" name="search" placeholder="Search book">
+                    <div onmouseover="handleMouseoverBookSearchList()" onmouseout="handleMouseOutBookSearchList()" id="list-search-bar" class="absolute left-0 right-0 top-[calc(100%+12px)] z-20 border-l-2 border-r-2 border-b-2 border-solid border-gray_custom_4 rounded">
+                        {{-- Display list books --}}
+                    </div>
+                </div>
+                <span class="cursor-pointer" onclick="handleClickSearch()">
+                    <i class="scale-110 fa-solid fa-magnifying-glass text-red_custom"></i>
+                </span>
             </div>
             <i class="hidden text-3xl menu_navigation fa-solid fa-bars sm:block lg:hidden"></i>
         </div>
@@ -42,6 +48,77 @@
     </header>
     @include("user/layout/navigation")
     <script>
+        let listSearchBar = document.querySelector("#list-search-bar");
+        let setTimeOuthandleSearchListBook = null;
+        let isForcus = false;
+
+        // Prevent blur of input when mouse on list search
+        function handleMouseoverBookSearchList(){
+            isForcus = false;
+        }
+
+        function handleMouseOutBookSearchList(){
+            isForcus = true;
+        }
+
+        //Close list books in search bar
+        function closeSearchListBooks(event){
+            if(isForcus){
+                if(setTimeOuthandleSearchListBook){
+                    clearTimeout(setTimeOuthandleSearchListBook);
+                }
+                listSearchBar.innerHTML = '';
+                return;
+            }
+            return;
+
+        }
+        //Handle when press enter
+        function handleKeyEnter(event){
+            if(event.key.toLowerCase() === 'enter'){
+                window.location.href = `/category?pagination=1&search=${event.target.value}`;
+            }
+            return;
+        }
+
+        //Handle when click search icon
+        function handleClickSearch(){
+            const searchInputNameBook = document.querySelector("#book-search-name").value;
+            window.location.href = `/category?pagination=1&search=${searchInputNameBook}`;
+        }
+
+        //Handle search with input in search input
+        function handleSearchListBooks(event){
+            isForcus = true;
+            if(setTimeOuthandleSearchListBook){
+                clearTimeout(setTimeOuthandleSearchListBook);
+            }
+            if(event.target.value.trim()===''){
+                listSearchBar.innerHTML = '';
+                return;
+            }
+            setTimeOuthandleSearchListBook = setTimeout(() => {
+                fetch(`/books/search-name?search=${event.target.value.trim()}`)
+                .then((res)=>{
+                    return res.json();
+                }).then((datas)=>{
+                    let listSearchString = `<p class="block w-full px-2 py-1 bg-white">Not find books</p>`;
+                    if(datas.length > 0){
+                        listSearchString = "";
+                        for (let index = 0; index < datas.length; index++) {
+                            listSearchString+=`<a class="block w-full px-2 py-1 bg-white hover:bg-gray_custom_4" href="/category?pagination=1&search=${datas[index].name}">${datas[index].name}</a>`
+                        }
+                    }
+                    listSearchBar.innerHTML = listSearchString;
+
+                })
+                .catch((error)=>{
+                    listSearchBar.innerHTML = `<p class="block w-full px-2 py-1 bg-white">Something went wrong</p>`
+                })
+            }, 700);
+        }
+
+        //Get items in carts
         document.addEventListener('DOMContentLoaded', function() {
             //Handle product in cart(count quantity products)
             const CART_NAME = @json(env('PRODUCTS_CART'));
