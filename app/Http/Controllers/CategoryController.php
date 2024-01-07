@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Books,Types};
-use App\Models\Comment;
+use App\Models\{Books,Types,Comment};
 use DB;
 use Illuminate\Http\Request;
 
@@ -80,7 +79,6 @@ class CategoryController extends Controller
 
         $books = $books->skip($skip)->take($take)->get();
         foreach ($books as $key => $book) {
-            error_log($book->id);
             $totalComment = Comment::where('book_id', $book->id)->count();
             $book->totalComment = $totalComment;
         }

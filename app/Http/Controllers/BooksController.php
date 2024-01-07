@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
-use App\Models\Books;
-use App\Models\Types;
+use App\Models\{Books,Types,Comment};
 
 class BooksController extends Controller
 {
@@ -158,16 +157,46 @@ class BooksController extends Controller
 
     }
 
+    public function searchBooksWithType(Request $request){
+        if($request->has('type')){
+            if(strlen(trim($request->query('type')))>0){
+                try {
+                    $books = Books::where('type', $request->query('type'))->orderBy('created_at', 'desc')->take(30)->get();
+                    return response()->json($books,200);
+                } catch (\Throwable $th) {
+                    return response()->json($th,500);
+                }
+            }
+            else{
+                try {
+                    $books = Books::orderBy('created_at', 'desc')->take(30)->get();
+                    return response()->json($books,200);
+                } catch (\Throwable $th) {
+                    return response()->json($th,500);
+                }
+            }
+
+        }
+        return response()->json([],400);
+
+    }
+
     public function userBooksHome(){
         $res = [];
         $bannerBooks = Books::orderBy('created_at', 'desc')->skip(3)->take(3)->join('types','books.type','=','types.id')->select('books.*', 'types.name as typeBook')->get();
         $bestSellingBooks =  Books::take(12)->get();
+        foreach ($bestSellingBooks as $key => $book) {
+            $totalComment = Comment::where('book_id', $book->id)->count();
+            $book->totalComment = $totalComment;
+        }
         $thisWeekBooks = Books::orderBy('created_at', 'desc')->take(3)->join('types','books.type','=','types.id')->select('books.*', 'types.name as typeBook')->get();
         $latestPublishedBooks = Books::orderBy('created_at', 'desc')->take(30)->get();
+        $latestPublishedTypes = Types::orderBy('created_at', 'desc')->take(4)->get();
         $res['bannerBooks'] = $bannerBooks;
         $res['bestSellingBooks'] = $bestSellingBooks;
         $res['thisWeekBooks'] = $thisWeekBooks;
         $res['latestPublishedBooks'] = $latestPublishedBooks;
+        $res['latestPublishedTypes'] = $latestPublishedTypes;
         return view('user/home',$res);
     }
 }

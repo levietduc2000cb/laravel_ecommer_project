@@ -55,6 +55,8 @@
                         class="cursor-pointer text-red_custom hover:underline">Sign Up</a> here</p>
                 <button class="py-3 text-base font-medium text-white bg-red_custom px-11" type="submit">Login</button>
             </div>
+            <a href="{{route('login_facebook')}}" class="block w-full py-3 mt-4 text-center text-white rounded-sm bg-blue_custom"><i class="mx-2 fa-brands fa-facebook"></i>Đăng nhập bằng Facebook</a>
+            <a href="{{route('login_google')}}" class="block w-full py-3 mt-4 text-center text-white rounded-sm bg-red_custom"><i class="mx-2 fa-brands fa-google"></i>Đăng nhập với Google</a>
         </form>
         <div id="modal_forgot-password"></div>
     </div>

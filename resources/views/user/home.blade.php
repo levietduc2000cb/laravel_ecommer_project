@@ -70,14 +70,16 @@ Home
                         <h4 class="text-sm font-light text-gray_custom_2">{{$bestSellingBook->author}}</h4>
                         <div class="px-3 py-5">
                             <div class="flex gap-1">
-                                <i class="text-sm fa-solid fa-star text-orange_custom"></i>
-                                <i class="text-sm fa-solid fa-star text-orange_custom"></i>
-                                <i class="text-sm fa-solid fa-star text-orange_custom"></i>
-                                <i class="text-sm fa-solid fa-star text-orange_custom"></i>
-                                <i class="text-sm fa-solid fa-star text-gray_custom"></i>
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if ($i<=$bestSellingBook->star)
+                                        <i class="text-sm fa-solid fa-star text-orange_custom"></i>
+                                    @else
+                                        <i class="text-sm fa-solid fa-star text-gray_custom"></i>
+                                    @endif
+                                @endfor
                             </div>
                             <div class="flex items-baseline justify-between">
-                                <p class="text-sm font-light">(<span class="mr-2 text-red_custom">120</span>Review)</p>
+                                <p class="text-sm font-light">(<span class="mr-2 text-red_custom">{{$bestSellingBook->totalComment}}</span>Review)</p>
                                 <p class="text-xl font-semibold text-red_custom">
                                     ${{convertToMoney(calculatorPrice((float)$bestSellingBook->price,(float)$bestSellingBook->sale))}}
                                 </p>
@@ -141,19 +143,15 @@ Home
         <div class="items-center justify-between lg:flex">
             <p class="text-3xl font-bold capitalize font-playfair">Latest Published items</p>
             <ul class="flex gap-2 mt-3 text-base font-medium lg:mt-0 text-gray_custom_3">
-                <li
-                    class="px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer item active-bg active-color active-border">
-                    All</li>
-                <li class="px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer">
-                    Horror</li>
-                <li class="px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer">
-                    Thriller</li>
-                <li
-                    class="hidden sm:block px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer">
-                    Science Fiction</li>
-                <li
-                    class="hidden md:block px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer">
-                    History</li>
+                <li onclick="onClickType('',0)"
+                    class="lastestSelect px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer item active-bg active-color active-border">
+                    All
+                </li>
+                @foreach($latestPublishedTypes as $key => $type)
+                    <li onclick="onClickType({{$type->id}},{{$key+1}})" class="lastestSelect px-6 py-[0.4375rem] border border-solid rounded-full border-gray_custom cursor-pointer item">
+                        {{$type->name}}
+                    </li>
+                @endforeach
             </ul>
         </div>
         <div id="slide_3" class="relative w-full overflow-x-hidden">
@@ -177,7 +175,6 @@ Home
                                 <i class="text-sm fa-solid fa-star text-gray_custom"></i>
                             </div>
                             <div class="flex items-baseline justify-between">
-                                <p class="text-sm font-light">(<span class="mr-2 text-red_custom">120</span>Review)</p>
                                 <p class="text-xl font-semibold text-red_custom">
                                     ${{convertToMoney(calculatorPrice((float)$latestPublishedBook->price,(float)$latestPublishedBook->sale))}}
                                 </p>
@@ -197,7 +194,7 @@ Home
             </button>
         </div>
         <div class="text-center">
-            <a href="{{route('category')}}"
+            <a href="{{route('category',['pagination'=>1])}}"
                 class="px-10 py-4 mt-8 text-base font-medium border border-solid rounded-full outline-none text-red_custom border-red_custom btnBeforeEffectTopToDown hover:text-white after:bg-red_custom">Browse
                 More
             </a>
@@ -249,11 +246,10 @@ Home
 @endif
 @endsection
 
-
-
 @pushOnce('scripts')
+<script src="{{asset('/js/custom.js')}}"></script>
 <script>
-    function onClickSlideLeft(){
+        function onClickSlideLeft(){
             let item_best_selling_container = document.querySelector(".item_best_selling_container");
             let item_best_selling = document.querySelectorAll(".item_best_selling");
             item_best_selling_container.appendChild(item_best_selling[0]);
@@ -263,6 +259,62 @@ Home
             let item_best_selling_container = document.querySelector(".item_best_selling_container");
             let item_best_selling = document.querySelectorAll(".item_best_selling");
             item_best_selling_container.prepend(item_best_selling[item_best_selling.length-1]);
+        }
+
+        //Get router search;
+        let urlSearchBooksType = "<?php echo(route('books_type_search')) ?>";
+        //Handle click to change books with type and index select
+        function onClickType(type,indexKey){
+            //Active select
+            const lastestSelects = document.querySelectorAll(".lastestSelect");
+            lastestSelects.forEach((lastestSelect, index)=>{
+                lastestSelect.classList.remove("active-bg","active-color","active-border");
+                if(index === indexKey){
+                    lastestSelect.classList.add("active-bg","active-color","active-border");
+                }
+            })
+            //Action items
+            slide3Container.innerHTML = '<div class="flex items-center justify-center w-full h-64 font-medium text-darkRed_custom">Loading...</div>';
+            const urlSearchBooksTypeQuery =  urlSearchBooksType+`?type=${type}`
+            fetch(urlSearchBooksTypeQuery)
+            .then((res)=>res.json())
+            .then((data)=>{
+                let books = '';
+                let urlHref = '';
+                let srcImg = '';
+                let priceBook = '';
+
+                for (const book of data) {
+                    urlHref = `${window.location.origin}/book/${book.id}`;
+                    srcImg = `${book.image[0] ? window.location.origin+"/images/books/"+book.image[0] : window.location.origin+"/images/books/no-image.jpg"}`;
+                    priceBook = book.price - ((book.sale/100)*book.price);
+
+                    books += `<a href="${urlHref}"
+                        class="flex-shrink-0 w-1/2 px-1 bg-white md:px-2 lg:px-3 sm:w-1/4 md:w-1/5 lg:w-1/5 item_slide_3">
+                        <img class="object-cover w-full" src="${srcImg}"
+                            alt="item-image">
+                        <div class="px-5 pt-3 pb-5">
+                        <h3
+                            class="text-xl font-bold text-[rgb(26, 26, 26)] mb-2 name font-playfair cursor-pointer truncate hover:text-darkRed_custom">
+                            ${book.name}</h3>
+                        <h4 class="text-sm font-light text-gray_custom_2">${book.author}</h4>
+                        <div class="px-3 py-5">
+                            <div class="flex gap-1">
+                                ${renderStars(data.star)}
+                            </div>
+                            <div class="flex items-baseline justify-between">
+                                <p class="text-xl font-semibold text-red_custom">
+                                    ${converToMoney(priceBook)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>`
+                }
+                slide3Container.innerHTML = books;
+            }).catch((err)=>{
+                alert("Something went wrong")
+            })
         }
 </script>
 @endPushOnce
@@ -314,11 +366,12 @@ Home
         let slide3Container = document.getElementById("slide_3_container");
         let slide3Left = document.getElementById('slide_3_left');
         let slide3Right = document.getElementById('slide_3_right');
-        let itemSlide3s = document.querySelectorAll(".item_slide_3");
-        let widthContent = (itemSlide3s[0].offsetWidth ) * itemSlide3s.length;
-        let withSlide3Container = slide3.offsetWidth;
         let position = 0;
         slide3Left.addEventListener("click",(e)=>{
+            let itemSlide3s = document.querySelectorAll(".item_slide_3");
+            let widthContent = (itemSlide3s[0].offsetWidth ) * itemSlide3s.length;
+            let withSlide3Container = slide3.offsetWidth;
+            //Run slide 3 when click left
             position = position + withSlide3Container;
             if(position >= 0){
                 position = 0;
@@ -326,6 +379,10 @@ Home
             slide3Container.style.transform = `translateX(${position}px)`
         })
         slide3Right.addEventListener("click",(e)=>{
+            let itemSlide3s = document.querySelectorAll(".item_slide_3");
+            let widthContent = (itemSlide3s[0].offsetWidth ) * itemSlide3s.length;
+            let withSlide3Container = slide3.offsetWidth;
+            //Run slide 3 when click right
             position = position - withSlide3Container;
             if(Math.abs(position) >= widthContent - withSlide3Container - 4){
                 position = (widthContent - withSlide3Container - 4) * -1;

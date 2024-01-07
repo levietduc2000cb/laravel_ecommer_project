@@ -17,7 +17,9 @@ use App\Http\Controllers\{
     BlogsController,
     AnalysticController,
     CategoryController,
-    CommentController
+    CommentController,
+    LoginGoogleController,
+    LoginFacebookController,
 };
 use App\Models\Users;
 
@@ -45,8 +47,9 @@ Route::prefix('/logout')->group(function () {
     Route::delete('/', [AuthenticationController::class, 'handleLogout'])->name("handle-logout");
 });
 
-//Handle search bar action
+//Handle search bar action or search
 Route::get('books/search-name',[BooksController::class, 'searchName'])->name('books_search');
+Route::get('books/search-books-type',[BooksController::class, 'searchBooksWithType'])->name('books_type_search');
 Route::get('blogs/search-name',[BlogsController::class, 'searchName'])->name('blogs_search');
 
 Route::group([],function () {
@@ -168,3 +171,11 @@ Route::group(['middleware'=>['auth','user-access:1']],function () {
 
     });
 });
+
+// Google Sign In
+Route::get('/auth/google', [LoginGoogleController::class, 'redirectToGoogle'])->name('login_google');
+Route::get('/auth/google/callback', [LoginGoogleController::class, 'handleGoogleCallback'])->name('handle-login-google');
+
+// Facebook Sign In
+Route::get('/auth/facebook', [LoginFacebookController::class, 'redirectToFacebook'])->name('login_facebook');
+Route::get('/auth/facebook/callback', [LoginFacebookController::class, 'handleFacebookCallback'])->name('handle-login-facebook');

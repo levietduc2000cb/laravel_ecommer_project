@@ -30,3 +30,17 @@ function converToMoney(money) {
     });
     return formattedMoney.slice(0, -2);
 }
+
+function renderStars(totalStar) {
+    let htmlStars = '';
+    for (let index = 0; index < 5; index++) {
+        if (index < totalStar) {
+            htmlStars +=
+                '<i class="text-sm fa-solid fa-star text-orange_custom"></i>';
+        } else {
+            htmlStars +=
+                '<i class="text-sm fa-solid fa-star text-gray_custom"></i>';
+        }
+    }
+    return htmlStars;
+}

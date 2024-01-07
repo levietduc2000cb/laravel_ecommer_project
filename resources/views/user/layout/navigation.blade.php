@@ -30,6 +30,10 @@
             <li class="w-full lg:w-auto"><a href="{{route('user_profile')}}"
                 class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Profile</a>
             </li>
+            @else
+            <li class="w-full lg:w-auto"><a href="{{route('login')}}"
+                class="block w-full py-3 text-center md:hidden lg:w-auto lg:py-0 hover:text-red_custom">Login</a>
+            </li>
             @endif
         </ul>
     </nav>
