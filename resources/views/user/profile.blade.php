@@ -94,10 +94,10 @@ if(isset($user[0]->address)){
                     @else
                     @endif
                 </div>
-                <div id="loading" class="text-center">
-                    Loading...
-                </div>
             </ul>
+            <div id="loading_orders" class="text-center" style="display: none">
+                Loading...
+            </div>
         </div>
         <div class="p-8 rounded-lg shadow-xl">
             <div class="flex items-center justify-between py-2 border-b border-solid border-gray_custom_2">
@@ -140,6 +140,7 @@ if(isset($user[0]->address)){
 
 @once
 @push('scripts')
+<script src="{{asset('/js/custom.js')}}"></script>
 <script>
     function handleUpdateAvatar(event){
 
@@ -163,13 +164,55 @@ if(isset($user[0]->address)){
 
 @pushOnce('scripts_footer')
     <script>
-
         let myOrders = document.getElementById("my_orders");
+        let loadingOrders = document.getElementById("loading_orders");
+        let userId = @json(auth()->user()->id);
+        let paginationOrders = 1;
         myOrders.addEventListener("scroll", function(event) {
             const {scrollHeight, scrollTop, clientHeight} = event.target;
-
+            //Handle end scroll
             if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
-                console.log('scrolled');
+                //Display loading orders
+                loadingOrders.style.display = "block";
+                //Get csrftoken when send get my orders
+                const csrfToken = document.cookie.split(';')
+                .map(cookie => cookie.trim())
+                .find(cookie => cookie.startsWith('XSRF-TOKEN='))
+                .split('=')[1];
+
+                fetch(`/track-order/orders/${userId}?pagination=${paginationOrders}`, {
+                    headers: {
+                        'X-XSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                    }).then(response => {
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.orders && data.orders.length > 0){
+                            data.orders.forEach((order)=>{
+                                let htmlString = `
+                                <li class="flex items-center justify-between py-2 gap-x-3">
+                                    <div>
+                                        <div class="text-base font-semibold">Bill #${order.id}</div>
+                                        <div class="text-sm text-gray_custom_2">${order.created_at}</div>
+                                    </div>
+                                    <div class="flex items-center h-full">
+                                        ${renderStatusOrder(order.status)}
+                                    </div>
+                                </li>
+                                `;
+                                myOrders.insertAdjacentHTML('beforeend', htmlString);
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        alert("Lấy thông tin các đơn hàng thất bại")
+                    }).finally(() => {
+                        loadingOrders.style.display = "none";
+                        paginationOrders+=1;
+                });
+
             }
         })
 

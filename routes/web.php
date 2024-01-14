@@ -91,6 +91,7 @@ Route::group(['middleware'=>['auth','user-access:0']],function () {
     //Track Order
     Route::prefix('/track-order')->group(function () {
         Route::get('/',[TrackOrderController::class, 'index'])->name('user_track-order');
+        Route::get('/orders/{customerId}',[TrackOrderController::class, 'showOrders'])->name('user_orders');
         Route::get('/{id}',[TrackOrderController::class, 'show'])->name('user_track-order_detail');
     });
     // Profile

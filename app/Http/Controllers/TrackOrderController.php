@@ -34,11 +34,12 @@ class TrackOrderController extends Controller
         if(isset($request->discount)){
             $data['discount'] = $request->discount;
         }
-        $res = Orders::create($data);
-        if($res){
+        try {
+            $res = Orders::create($data);
             return response()->json(['msg' => 'Tạo đơn hàng thành công'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => 'Tạo đơn hàng thất bại'], 400);
         }
-        return response()->json(['msg' => 'Tạo đơn hàng thất bại'], 400);
     }
 
     public function show($id)
@@ -46,6 +47,19 @@ class TrackOrderController extends Controller
         $order = Orders::where('id', $id)->get();
         // dd($data);
         return view('user/track_order_detail',['order' => $order[0]]);
+    }
+
+    public function showOrders($customerId, Request $request)
+    {
+        $skip  = 10;
+        $pagination = $request->query('pagination');
+        error_log("show Orders");
+        try {
+            $orders = Orders::where('customerId', $customerId)->orderBy('created_at','desc')->skip($pagination * $skip)->take(10)->get();
+            return response()->json(['orders' => $orders], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['msg' => 'Tạo đơn hàng thất bại'], 400);
+        }
     }
 
     public function edit($id)

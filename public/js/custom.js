@@ -44,3 +44,13 @@ function renderStars(totalStar) {
     }
     return htmlStars;
 }
+
+function renderStatusOrder(status) {
+    if (status == 0) {
+        return '<span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right,red,red )">Placed</span>';
+    } else if (status == 1) {
+        return '<span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right, red,blue)">Shipped</span>';
+    } else {
+        return '<span class="py-1 text-white rounded-full w-[128px] text-center" style="background: linear-gradient(to right, blue,blue )">Delivered</span>';
+    }
+}
