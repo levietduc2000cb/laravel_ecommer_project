@@ -10,8 +10,8 @@ class Orders extends Model
     use HasFactory;
     protected $table = 'orders';
 
-    protected $fillable = ['total','products','tax','discount','status','customerId'];
+    protected $fillable = ['total','products','tax','discount','status','customerId','isPayMethodSuccess','payMethod'];
     protected $guarded = ['id','created_at','updated_at'];
-    protected $casts = ['total'=>'integer','products'=>"array",'tax'=>'integer','discount'=>"integer",'status'=>'integer','customerId'=>'integer'];
+    protected $casts = ['total'=>'integer','products'=>"array",'tax'=>'integer','discount'=>"integer",'status'=>'integer','customerId'=>'integer','isPayMethodSuccess'=>'boolean','payMethod'=>'string'];
 
 }

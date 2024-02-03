@@ -20,6 +20,7 @@ use App\Http\Controllers\{
     CommentController,
     LoginGoogleController,
     LoginFacebookController,
+    PayMethodController
 };
 use App\Models\Users;
 
@@ -109,6 +110,13 @@ Route::group(['middleware'=>['auth','user-access:0']],function () {
     Route::prefix('/comment')->group(function () {
         Route::post('/',[CommentController::class, 'store'])->name('customer-comment');
     });
+
+    //Cổng thanh toán VN pay
+    Route::prefix('/pay')->group(function () {
+        Route::post('/vnpay',[PayMethodController::class, 'vnpay'])->name('vnpay');
+        Route::get('/vnpay_return',[PayMethodController::class, 'vnpay_return'])->name('vnpay_return');
+    });
+
 });
 
 

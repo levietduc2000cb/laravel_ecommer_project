@@ -13,35 +13,7 @@ Track Order
 {{-- Footer --}}
 @include('user/layout/footer')
 @endsection
-
 @section('content')
-@php
-//Set status first div
-function setProcessBar1($status){
-    if($status == 0){
-    return 'active1';
-    }
-    else if($status >= 1){
-    return 'active1 active2 active';
-    }
-    return ;
-}
-//Set status second div
-function setProcessBar2($status){
-    if($status == 2){
-    return 'active active3';
-    }
-    return ;
-}
-function countQuantity($products){
-    $count = 0;
-    for ($i=0; $i < count($products); $i++) {
-        $count +=  intval($products[$i]->quantity);
-    }
-    return $count;
-}
-
-@endphp
 {{-- Title --}}
 <x-page-title-background img="https://trumpwallpapers.com/wp-content/uploads/Book-Wallpaper-23-2803-x-1869.jpg"
     titleName="Track Order" />

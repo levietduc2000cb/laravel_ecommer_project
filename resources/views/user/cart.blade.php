@@ -68,6 +68,19 @@ Cart
                     class="w-full py-2 text-xs font-medium leading-5 text-white rounded font-roboto bg-green_custom">
                     PURCHASE
                 </button>
+                <form action="{{route('vnpay')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="customerId" value="{{auth()->user()->id}}">
+                    <input type="hidden" name="products" value="">
+                    <input type="hidden" name="total" value=''>
+                    <input type="hidden" name="tax" value="">
+                    <input type="hidden" name="discount" value="">
+                    <input type="hidden" name="status" value=0>
+                    <button type="submit" name="redirect" id="redirect"
+                        class="w-full py-2 mt-2 text-xs font-medium leading-5 text-white rounded h-9 font-roboto bg-blue_custom">
+                        <img class="w-full h-full" src="{{asset('assets/vnpay.svg')}}" alt="vn-pay">
+                    </button>
+                </form>
                 <a href="{{route('category')}}"
                     class="block w-full py-2 mt-3 text-xs font-medium leading-5 text-center rounded font-roboto bg-gray_custom_4">
                     BACK TO SHOP
@@ -86,12 +99,17 @@ Cart
     var totalPrice = document.getElementById("total_price");
     var discount = document.getElementById("discount");
     var tax = document.getElementById("tax");
+
+    var payProducts = document.querySelectorAll("input[name='products']");
+    var payTotal = document.querySelectorAll("input[name='total']");
+    var payTax = document.querySelectorAll("input[name='tax']");
+    var payDiscount = document.querySelectorAll("input[name='discount']");
+
     var discountNumber = 5000;
     var total = 0;
     const CART_NAME = @json(env('PRODUCTS_CART'));
     var cart = JSON.parse(localStorage.getItem(CART_NAME)) || [];
     let imageLink = '';
-
 
     //Handle caculate before discount
     function caculateTotal(){
@@ -110,6 +128,19 @@ Cart
         discount.innerText = `${converToMoney(discountNumber)} đ`;
         tax.innerText = `${converToMoney(10000)} đ`;
         totalPrice.innerText = `${converToMoney(total + 10000 + discountNumber)} đ`;
+        //Handle paymethod
+        payProducts.forEach(products => {
+            products.value = JSON.stringify([...cart]);
+        });
+        payTotal.forEach(pTotal=>{
+            pTotal.value = Number(total + 10000 + discountNumber);
+        })
+        payTax.forEach(tax=>{
+            tax.value = 10000;
+        })
+        payDiscount.forEach(discount=>{
+            discount.value = discountNumber;
+        })
     }
 
     //Handle change quantity of one product

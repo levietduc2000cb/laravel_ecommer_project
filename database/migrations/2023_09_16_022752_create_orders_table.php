@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('tax')->nullable();
             $table->integer('discount')->nullable();
             $table->json('products');
+            $table->boolean('isPayMethodSuccess');
+            $table->string('payMethod');
             $table->timestamps();
         });
     }

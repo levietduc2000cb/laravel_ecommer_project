@@ -28,6 +28,8 @@ class TrackOrderController extends Controller
         $data['status'] = $request->status;
         $data['total'] = $request->total;
         $data['products'] = json_encode($request->products);
+        $data['isPayMethodSuccess'] = 1;
+        $data['payMethod'] ='cash';
         if(isset($request->tax)){
             $data['tax'] = $request->tax;
         }
